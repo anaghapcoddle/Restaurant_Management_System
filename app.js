@@ -1,28 +1,39 @@
-
-
 const express = require('express');
+const mysql = require('mysql');
 
 const app = express();
 app.use(express.json());
 
-const users = [];
+const con = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  password: 'ANAGHA123',
+  database: 'restaurantdb',
+});
+
+con.connect((err) => {
+  if (err) {
+    throw err;
+  }
+  console.log('Connected to MySQL');
+});
 
 app.post('/signup', (req, res) => {
-  const data = {
-    firstname: req.body.firstname,
-    lastname: req.body.lastname,
-    username: req.body.username,
-    email: req.body.email,
-    phone: req.body.phone,
-    password: req.body.password,
-    confirmpassword: req.body.confirmpassword,
-  };
+  const { firstName } = req.body;
+  const { lastName } = req.body;
+  const { username } = req.body;
+  const { email } = req.body;
+  const { password } = req.body;
 
-  users.push(data);
-
-  res.status(201).json({ message: 'User account created.' });
+  con.query('INSERT INTO users (first_name, last_name, username, email, password) VALUES (?, ?, ?, ?, ?)', [firstName, lastName, username, email, password], (err, result) => {
+    if (err) {
+      console.error('Error inserting data:', err);
+    } else {
+      res.send('Data inserted successfully');
+    }
+  });
 });
 
 app.listen(3000, () => {
-  console.log(`Server is running`);
+  console.log('Server is running.');
 });
