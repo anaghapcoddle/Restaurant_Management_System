@@ -25,8 +25,8 @@ function login(req, res) {
     } else {
       res.status(200).send('Logged in successfully');
 
-      let token = jwt.sign(results, 'secret', { expiresIn: 86400 });
-      res.status(200).send({auth:true, token: token});
+      // let token = jwt.sign(results, 'secret', { expiresIn: 86400 });
+      // res.status(200).send({auth:true, token: token});
     }
   });
 }
