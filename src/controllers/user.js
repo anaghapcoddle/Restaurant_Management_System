@@ -16,17 +16,17 @@ function signup(req, res) {
 
 function login(req, res) {
   const { username, password } = req.body;
-  userModel.findUser(username, password, (error, results) => {
-    if (error) {
-      console.error(error);
-      res.status(500).send('Internal Server Error');
-    } else if (results.length == 0) {
-      res.status(401).send('No user account found. Please sign up.');
+  userModel.findUser(username, password, (error, result) => {
+    if (error || result.length === 0) {
+      res.status(500).send({ error: 'Login failed' });
     } else {
-      res.status(200).send('Logged in successfully');
-
-      // let token = jwt.sign(results, 'secret', { expiresIn: 86400 });
-      // res.status(200).send({auth:true, token: token});
+      const resp = {
+        id: result[0].id,
+        display_name: result[0].display_name,
+      };
+      const token = jwt.sign(resp, 'secret', { expiresIn: 86400 });
+      res.status(200).send('Logged in successully');
+      // res.status(200).send({auth:true,token:token})
     }
   });
 }
