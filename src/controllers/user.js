@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+const jwt = require('jsonwebtoken');
 const userModel = require('../models/user');
 
 function signup(req, res) {
@@ -19,10 +20,13 @@ function login(req, res) {
     if (error) {
       console.error(error);
       res.status(500).send('Internal Server Error');
-    } else if (results.length === 1) {
-      res.status(200).send('Logged in successfully');
-    } else {
+    } else if (results.length == 0) {
       res.status(401).send('No user account found. Please sign up.');
+    } else {
+      res.status(200).send('Logged in successfully');
+
+      let token = jwt.sign(results, 'secret', { expiresIn: 86400 });
+      res.status(200).send({auth:true, token: token});
     }
   });
 }
