@@ -48,6 +48,16 @@ app.post('/login', (req, res) => {
   });
 });
 
+app.get('/fetchmenu', (req, res) => {
+  con.query('SELECT name, price, availability FROM menu', (error, results) => {
+    if (error) {
+      console.error(error);
+      res.status(500).send('Internal Server Error');
+    }
+    res.json(results);
+  });
+});
+
 app.listen(3000, () => {
   console.log('Server is running.');
 });
