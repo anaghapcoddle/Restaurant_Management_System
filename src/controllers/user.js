@@ -24,9 +24,10 @@ function login(req, res) {
         id: result[0].id,
         display_name: result[0].display_name,
       };
+      // console.log(resp);
       const token = jwt.sign(resp, 'secret', { expiresIn: 86400 });
-      res.status(200).send('Logged in successully');
-      // res.status(200).send({auth:true,token:token})
+      // res.status(200).send('Logged in successully');
+      res.status(200).send({ auth: true, token });
     }
   });
 }
