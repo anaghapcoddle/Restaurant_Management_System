@@ -9,6 +9,6 @@ const routes = require('./src/routes/routes');
 
 app.use('/', routes);
 
-app.listen(3000, () => {
+app.listen(3001, () => {
   console.log('Server is running.');
 });

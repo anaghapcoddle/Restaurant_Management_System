@@ -1,22 +1,18 @@
+/* eslint-disable no-useless-catch */
 /* eslint-disable no-console */
-const mysql = require('mysql2');
 
-const con = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: 'ANAGHA123',
-  database: 'anagha',
-});
+const { promisify } = require('util');
+const ordersCon = require('../config/db');
 
-con.connect((err) => {
-  if (err) {
-    throw err;
+const query = promisify(ordersCon.query).bind(ordersCon);
+
+async function fetchOrdersData() {
+  try {
+    const results = await query('SELECT * FROM orders');
+    return results;
+  } catch (error) {
+    throw error;
   }
-  console.log('Connected to MySQL');
-});
-
-function fetchOrdersData(callback) {
-  con.query('SELECT * FROM orders', callback);
 }
 
 module.exports = {

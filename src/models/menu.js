@@ -1,22 +1,17 @@
+/* eslint-disable no-useless-catch */
 /* eslint-disable no-console */
-const mysql = require('mysql2');
+const { promisify } = require('util');
+const con = require('../config/db');
 
-const con = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: 'ANAGHA123',
-  database: 'anagha',
-});
+const query = promisify(con.query).bind(con);
 
-con.connect((err) => {
-  if (err) {
-    throw err;
+async function fetchMenuData() {
+  try {
+    const results = await query('SELECT name, price, availability FROM menu');
+    return results;
+  } catch (error) {
+    throw error;
   }
-  console.log('Connected to MySQL');
-});
-
-function fetchMenuData(callback) {
-  con.query('SELECT name, price, availability FROM menu', callback);
 }
 
 module.exports = {
