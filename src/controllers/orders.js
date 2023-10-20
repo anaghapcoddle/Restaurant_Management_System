@@ -4,7 +4,6 @@ const ordersModel = require('../models/orders');
 async function fetchOrders(req, res) {
   try {
     const results = await ordersModel.fetchOrdersData();
-    //console.log(results);
     res.json(results);
   } catch (err) {
     console.error(err);

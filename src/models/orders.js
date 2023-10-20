@@ -2,9 +2,9 @@
 /* eslint-disable no-console */
 
 const { promisify } = require('util');
-const ordersCon = require('../config/db');
+const con = require('../config/db');
 
-const query = promisify(ordersCon.query).bind(ordersCon);
+const query = promisify(con.query).bind(con);
 
 async function fetchOrdersData() {
   try {
