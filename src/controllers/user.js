@@ -17,7 +17,6 @@ async function login(req, res) {
   const { username, password } = req.body;
   try {
     const result = await userModel.findUser(username, password);
-
     if (result.length === 0) {
       res.status(500).send({ error: 'Login failed' });
     } else {

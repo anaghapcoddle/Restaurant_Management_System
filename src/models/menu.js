@@ -1,7 +1,10 @@
 /* eslint-disable no-useless-catch */
 /* eslint-disable no-console */
 const { promisify } = require('util');
-const con = require('../config/db');
+const mysql = require('mysql2');
+const dbconfig = require('../config/db');
+
+const con = mysql.createConnection(dbconfig);
 
 const query = promisify(con.query).bind(con);
 
