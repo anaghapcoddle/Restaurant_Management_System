@@ -6,12 +6,12 @@ const dbconfig = require('../config/db');
 
 const con = mysql.createConnection(dbconfig);
 
-// con.connect((err) => {
-//   if (err) {
-//     throw err;
-//   }
-//   console.log('Connected to MySQL');
-// });
+con.connect((err) => {
+  if (err) {
+    throw err;
+  }
+  console.log('Connected to MySQL');
+});
 
 const query = promisify(con.query).bind(con);
 

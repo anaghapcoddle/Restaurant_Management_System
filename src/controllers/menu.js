@@ -1,9 +1,9 @@
 /* eslint-disable no-console */
 const menuModel = require('../models/menu');
 
-async function fetchmenu(req, res) {
+async function fetch(req, res) {
   try {
-    const results = await menuModel.fetchMenuData();
+    const results = await menuModel.fetch();
     res.json(results);
   } catch (err) {
     console.error(err);
@@ -12,5 +12,5 @@ async function fetchmenu(req, res) {
 }
 
 module.exports = {
-  fetchmenu,
+  fetch,
 };

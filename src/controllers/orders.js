@@ -1,9 +1,9 @@
 /* eslint-disable no-console */
 const ordersModel = require('../models/orders');
 
-async function fetchOrders(req, res) {
+async function fetch(req, res) {
   try {
-    const results = await ordersModel.fetchOrdersData();
+    const results = await ordersModel.fetch();
     res.json(results);
   } catch (err) {
     console.error(err);
@@ -12,5 +12,5 @@ async function fetchOrders(req, res) {
 }
 
 module.exports = {
-  fetchOrders,
+  fetch,
 };
