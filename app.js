@@ -6,9 +6,9 @@ const app = express();
 
 app.use(express.urlencoded({ extended: false }));
 
-const authRoutes = require('./src/routes/authRoutes');
-const menuRoutes = require('./src/routes/menuRoutes');
-const ordersRoutes = require('./src/routes/ordersRoutes');
+const authRoutes = require('./src/routes/auth');
+const menuRoutes = require('./src/routes/menu');
+const ordersRoutes = require('./src/routes/orders');
 
 app.use('/auth', authRoutes);
 app.use('/menu', menuRoutes);

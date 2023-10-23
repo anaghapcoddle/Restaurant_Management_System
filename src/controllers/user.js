@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const userModel = require('../models/user');
 
 let signupUsername; let signupEmail; let signupPassword;
+// eslint-disable-next-line no-unused-vars
 let success;
 
 async function signup(req, res) {
@@ -26,7 +27,6 @@ async function signup(req, res) {
     res.send('Data inserted successfully');
     success = true;
   } catch (error) {
-    // console.error('Error inserting data:', err);
     res.status(500).send('Internal Server Error');
     success = false;
     throw error;

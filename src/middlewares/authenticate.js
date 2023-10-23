@@ -1,6 +1,8 @@
 // const menuModel = require('../models/menu');
 
 const jwt = require('jsonwebtoken');
+
+// eslint-disable-next-line no-unused-vars
 let success;
 
 function verifyToken(req, res, next) {

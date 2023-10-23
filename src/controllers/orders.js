@@ -2,6 +2,7 @@
 const ordersModel = require('../models/orders');
 
 let fetchResults;
+// eslint-disable-next-line no-unused-vars
 let success;
 
 async function fetch(req, res) {
