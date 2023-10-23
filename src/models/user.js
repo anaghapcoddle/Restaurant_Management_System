@@ -15,6 +15,16 @@ con.connect((err) => {
 
 const query = promisify(con.query).bind(con);
 
+async function isExistingUser(username) {
+  try {
+    const existingResult = await query('SELECT * FROM users WHERE username = ?', [username]);
+    console.log(existingResult.length == 0);
+    return existingResult.length == 0;
+  } catch (error) {
+    throw error;
+  }
+}
+
 async function addUser(username, email, password) {
   try {
     const result = await query('INSERT INTO users (username, email, password) VALUES (?, ?, ?)', [username, email, password]);
@@ -34,6 +44,7 @@ async function findUser(username, password) {
 }
 
 module.exports = {
+  isExistingUser,
   addUser,
   findUser,
 };
