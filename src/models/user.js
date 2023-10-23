@@ -18,8 +18,7 @@ const query = promisify(con.query).bind(con);
 async function isExistingUser(username) {
   try {
     const existingResult = await query('SELECT * FROM users WHERE username = ?', [username]);
-    console.log(existingResult.length == 0);
-    return existingResult.length == 0;
+    return existingResult.length !== 0;
   } catch (error) {
     throw error;
   }

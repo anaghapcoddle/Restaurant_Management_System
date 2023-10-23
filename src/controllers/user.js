@@ -15,7 +15,7 @@ async function signup(req, res) {
   }
 
   const isUserNameExisting = await userModel.isExistingUser(signupUsername);
-  // console.log(isDuplicateUsername);
+  // console.log(isUserNameExisting);
   if (isUserNameExisting) {
     success = false;
     return res.status(400).send('Username is already in use');
@@ -25,10 +25,11 @@ async function signup(req, res) {
     await userModel.addUser(signupUsername, signupEmail, signupPassword);
     res.send('Data inserted successfully');
     success = true;
-  } catch (err) {
-    console.error('Error inserting data:', err);
+  } catch (error) {
+    // console.error('Error inserting data:', err);
     res.status(500).send('Internal Server Error');
     success = false;
+    throw error;
   }
 }
 

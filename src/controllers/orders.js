@@ -9,10 +9,10 @@ async function fetch(req, res) {
     fetchResults = await ordersModel.fetch();
     res.json(fetchResults);
     success = true;
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
     res.status(500).send('Internal Server Error');
     success = false;
+    throw error;
   }
 }
 

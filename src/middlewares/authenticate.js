@@ -10,13 +10,13 @@ function verifyToken(req, res, next) {
     success = false;
   }
   const token = authHeader.split(' ')[1];
-  jwt.verify(token, 'secret', (err, decoded) => {
-    if (err) {
-      res.status(500).send({ error: 'Authentication failed' });
-    } else {
-      next();
-    }
-  });
+  try {
+    jwt.verify(token, 'secret');
+    next();
+  } catch (error) {
+    res.status(500).send({ error: 'Authentication failed' });
+    throw error;
+  }
 }
 
 module.exports = {
