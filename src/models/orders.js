@@ -24,6 +24,16 @@ async function fetch() {
   }
 }
 
+async function add(employee_id, dining_table_id, type, status, delivery_status) {
+  try {
+    const addResult = await query('INSERT INTO orders (employee_id, dining_table_id, type, status, delivery_status) VALUES (?, ?, ?, ?, ?)', [employee_id, dining_table_id, type, status, delivery_status]);
+    return addResult;
+  } catch (error) {
+    throw error;
+  }
+}
+
 module.exports = {
   fetch,
+  add,
 };

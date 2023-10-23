@@ -1,9 +1,11 @@
+/* eslint-disable no-useless-catch */
 /* eslint-disable no-console */
 const ordersModel = require('../models/orders');
 
 let fetchResults;
 // eslint-disable-next-line no-unused-vars
 let success;
+let employeeId; let diningTableId; let type; let status; let deliveryStatus;
 
 async function fetch(req, res) {
   try {
@@ -17,6 +19,22 @@ async function fetch(req, res) {
   }
 }
 
+async function add(req, res) {
+  employeeId = req.body.employee_id;
+  diningTableId = req.body.dining_table_id;
+  type = req.body.type;
+  status = req.body.status;
+  deliveryStatus = req.body.delivery_status;
+  try {
+    await ordersModel.add(employeeId, diningTableId, type, status, deliveryStatus);
+    res.send('Data inserted successfully');
+    success = true;
+  } catch (error) {
+    throw error;
+  }
+}
+
 module.exports = {
   fetch,
+  add,
 };
