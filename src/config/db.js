@@ -7,11 +7,4 @@ const dbconfig = {
   database: 'anagha',
 };
 
-// con.connect((err) => {
-//   if (err) {
-//     throw err;
-//   }
-//   console.log('Connected to MySQL');
-// });
-
 module.exports = dbconfig;

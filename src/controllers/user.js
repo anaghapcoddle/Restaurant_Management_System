@@ -2,10 +2,14 @@
 const jwt = require('jsonwebtoken');
 const userModel = require('../models/user');
 
+let signupUsername; let signupEmail; let signupPassword;
+
 async function signup(req, res) {
-  const { username, email, password } = req.body;
+  signupUsername = req.body.username;
+  signupEmail = req.body.email;
+  signupPassword = req.body.password;
   try {
-    await userModel.addUser(username, email, password);
+    await userModel.addUser(signupUsername, signupEmail, signupPassword);
     res.send('Data inserted successfully');
   } catch (err) {
     console.error('Error inserting data:', err);
@@ -13,10 +17,13 @@ async function signup(req, res) {
   }
 }
 
+let loginUsername; let loginPassword;
+
 async function login(req, res) {
-  const { username, password } = req.body;
+  loginUsername = req.body.username;
+  loginPassword = req.body.password;
   try {
-    const result = await userModel.findUser(username, password);
+    const result = await userModel.findUser(loginUsername, loginPassword);
     if (result.length === 0) {
       res.status(500).send({ error: 'Login failed' });
     } else {
