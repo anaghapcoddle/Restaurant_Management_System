@@ -4,20 +4,17 @@ const { promisify } = require('util');
 const mysql = require('mysql2');
 const dbconfig = require('../config/db');
 
-const con = mysql.createConnection(dbconfig);
-
-con.connect((err) => {
-  if (err) {
-    throw err;
-  }
-  console.log('Connected to MySQL');
-});
-
-const query = promisify(con.query).bind(con);
-
 async function isExistingUser(username) {
   try {
+    const con = mysql.createConnection(dbconfig);
+    con.connect((err) => {
+      if (err) throw err;
+    });
+    const query = promisify(con.query).bind(con);
     const existingResult = await query('SELECT * FROM users WHERE username = ?', [username]);
+    con.end((err) => {
+      if (err) throw err;
+    });
     return existingResult.length !== 0;
   } catch (error) {
     throw error;
@@ -26,7 +23,15 @@ async function isExistingUser(username) {
 
 async function addUser(username, email, password) {
   try {
+    const con = mysql.createConnection(dbconfig);
+    con.connect((err) => {
+      if (err) throw err;
+    });
+    const query = promisify(con.query).bind(con);
     const result = await query('INSERT INTO users (username, email, password) VALUES (?, ?, ?)', [username, email, password]);
+    con.end((err) => {
+      if (err) throw err;
+    });
     return result;
   } catch (error) {
     throw error;
@@ -35,7 +40,15 @@ async function addUser(username, email, password) {
 
 async function findUser(username, password) {
   try {
+    const con = mysql.createConnection(dbconfig);
+    con.connect((err) => {
+      if (err) throw err;
+    });
+    const query = promisify(con.query).bind(con);
     const findUserResult = await query('SELECT * FROM users WHERE username = ? AND password = ?', [username, password]);
+    con.end((err) => {
+      if (err) throw err;
+    });
     return findUserResult;
   } catch (error) {
     throw error;

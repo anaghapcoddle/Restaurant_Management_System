@@ -4,21 +4,17 @@ const { promisify } = require('util');
 const mysql = require('mysql2');
 const dbconfig = require('../config/db');
 
-const con = mysql.createConnection(dbconfig);
-
-con.connect((err) => {
-  if (err) {
-    throw err;
-  }
-  console.log('Connected to MySQL');
-});
-
-const query = promisify(con.query).bind(con);
-
 async function fetch() {
   try {
+    const con = mysql.createConnection(dbconfig);
+    con.connect((err) => {
+      if (err) throw err;
+    });
+    const query = promisify(con.query).bind(con);
     const results = await query('SELECT name, price, availability FROM menu');
-    con.end();
+    con.end((err) => {
+      if (err) throw err;
+    });
     return results;
   } catch (error) {
     throw error;
