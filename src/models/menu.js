@@ -18,6 +18,7 @@ const query = promisify(con.query).bind(con);
 async function fetch() {
   try {
     const results = await query('SELECT name, price, availability FROM menu');
+    con.end();
     return results;
   } catch (error) {
     throw error;
