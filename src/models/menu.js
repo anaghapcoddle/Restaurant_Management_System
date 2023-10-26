@@ -21,6 +21,24 @@ async function fetch() {
   }
 }
 
+async function updateAvailability(item, status) {
+  try {
+    const con = mysql.createConnection(dbconfig);
+    con.connect((err) => {
+      if (err) throw err;
+    });
+    const query = promisify(con.query).bind(con);
+    const statusResult = await query('UPDATE menu SET availability = ? WHERE id = ?', [status, item]);
+    con.end((err) => {
+      if (err) throw err;
+    });
+    return statusResult;
+  } catch (error) {
+    throw error;
+  }
+}
+
 module.exports = {
   fetch,
+  updateAvailability,
 };

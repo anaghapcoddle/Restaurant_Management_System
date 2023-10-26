@@ -5,7 +5,7 @@ const ordersModel = require('../models/orders');
 let fetchResults;
 // eslint-disable-next-line no-unused-vars
 let success;
-let employeeId; let diningTableId; let type; let status; let deliveryStatus;
+let employeeId; let diningTableId; let type; let status; let deliveryStatus; let items;
 
 async function fetch(req, res) {
   try {
@@ -25,8 +25,17 @@ async function add(req, res) {
   type = req.body.type;
   status = req.body.status;
   deliveryStatus = req.body.delivery_status;
+  items = [];
+
+  for (let i = 0; req.body[`item${i}_name`]; i += 1) {
+    const item = {
+      name: req.body[`item${i}_name`],
+      quantity: parseFloat(req.body[`item${i}_quantity`]),
+    };
+    items.push(item);
+  }
   try {
-    await ordersModel.add(employeeId, diningTableId, type, status, deliveryStatus);
+    await ordersModel.add(employeeId, diningTableId, type, status, deliveryStatus, items);
     res.send('Data inserted successfully');
     success = true;
   } catch (error) {

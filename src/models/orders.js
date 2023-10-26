@@ -21,20 +21,29 @@ async function fetch() {
   }
 }
 
-async function add(employeeId, diningTableId, type, status, deliveryStatus) {
+async function add(employeeId, diningTableId, type, status, deliveryStatus, items) {
   try {
     const con = mysql.createConnection(dbconfig);
     con.connect((err) => {
       if (err) throw err;
     });
     const query = promisify(con.query).bind(con);
-    const addResult = await query('INSERT INTO orders (employee_id, dining_table_id, type, status, delivery_status) VALUES (?, ?, ?, ?, ?)', [employeeId, diningTableId, type, status, deliveryStatus]);
+
+    const orderResult = await query(
+      'INSERT INTO orders (employee_id, dining_table_id, type, status, delivery_status) VALUES (?, ?, ?, ?, ?)',
+      [employeeId, diningTableId, type, status, deliveryStatus],
+    );
+    const orderId = orderResult.insertId;
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const item of items) {
+      query('INSERT INTO order_items (order_id, menu_id, quantity) VALUES (?, ?, ?)', [orderId, item.name, item.quantity]);
+    }
     con.end((err) => {
       if (err) throw err;
     });
-    return addResult;
   } catch (error) {
-    throw error;
+    console.error('Error creating order:', error);
   }
 }
 
