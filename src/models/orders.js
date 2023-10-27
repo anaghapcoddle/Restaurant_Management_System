@@ -34,16 +34,24 @@ async function add(employeeId, diningTableId, type, status, deliveryStatus, item
       [employeeId, diningTableId, type, status, deliveryStatus],
     );
     const orderId = orderResult.insertId;
-
+    let totalOrderPrice = 0;
     // eslint-disable-next-line no-restricted-syntax
     for (const item of items) {
-      query('INSERT INTO order_items (order_id, menu_id, quantity) VALUES (?, ?, ?)', [orderId, item.name, item.quantity]);
+      const result = await query('SELECT price FROM menu WHERE id = ?', [item.name]);
+      const { price } = result[0];
+      // console.log(price);
+      const itemTotalPrice = price * item.quantity;
+      // console.log(itemTotalPrice);
+      totalOrderPrice += itemTotalPrice;
+      await query('INSERT INTO order_items (order_id, menu_id, quantity, amount) VALUES (?, ?, ?, ?)', [orderId, item.name, item.quantity, itemTotalPrice]);
     }
+    // console.log(totalOrderPrice);
+    await query('UPDATE orders SET total_amount = ? WHERE id = ?', [totalOrderPrice, orderId]);
     con.end((err) => {
       if (err) throw err;
     });
   } catch (error) {
-    console.error('Error creating order:', error);
+    throw error;
   }
 }
 

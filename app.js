@@ -10,11 +10,13 @@ const authRoutes = require('./src/routes/auth');
 const menuRoutes = require('./src/routes/menu');
 const ordersRoutes = require('./src/routes/orders');
 const tableRoutes = require('./src/routes/table');
+const billRoutes = require('./src/routes/bill');
 
 app.use('/auth', authRoutes);
 app.use('/menu', menuRoutes);
 app.use('/orders', ordersRoutes);
 app.use('/table', tableRoutes);
+app.use('/bill', billRoutes);
 
 app.listen(3000, () => {
   console.log('Server is running.');
