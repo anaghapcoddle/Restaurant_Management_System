@@ -23,8 +23,10 @@ async function signup(req, res) {
   }
 
   try {
-    await userModel.addUser(signupUsername, signupEmail, signupPassword);
-    res.send('Data inserted successfully');
+    signupResult = await userModel.addUser(signupUsername, signupEmail, signupPassword);
+    const message = `User account created successfully. Employee id is : ${signupResult}`;
+    res.send(message);
+    //res.send('User account created successfully');
     success = true;
   } catch (error) {
     res.status(500).send('Internal Server Error');

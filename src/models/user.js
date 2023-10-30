@@ -29,10 +29,11 @@ async function addUser(username, email, password) {
     });
     const query = promisify(con.query).bind(con);
     const result = await query('INSERT INTO employee (username, email, password) VALUES (?, ?, ?)', [username, email, password]);
+    const empId = result.insertId;
     con.end((err) => {
       if (err) throw err;
     });
-    return result;
+    return empId;
   } catch (error) {
     throw error;
   }

@@ -4,6 +4,7 @@ const authMiddleware = require('../middlewares/authenticate');
 
 const router = express.Router();
 
-router.put('/employee/edit', authMiddleware.verifyToken, adminController.editEmployee);
+router.post('/employee/view', authMiddleware.verifyToken, adminController.viewEmployee);
+router.post('/employee/update', authMiddleware.verifyToken, adminController.updateEmployee);
 
 module.exports = router;
