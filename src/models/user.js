@@ -11,7 +11,7 @@ async function isExistingUser(username) {
       if (err) throw err;
     });
     const query = promisify(con.query).bind(con);
-    const existingResult = await query('SELECT * FROM users WHERE username = ?', [username]);
+    const existingResult = await query('SELECT * FROM employee WHERE username = ?', [username]);
     con.end((err) => {
       if (err) throw err;
     });
@@ -28,7 +28,7 @@ async function addUser(username, email, password) {
       if (err) throw err;
     });
     const query = promisify(con.query).bind(con);
-    const result = await query('INSERT INTO users (username, email, password) VALUES (?, ?, ?)', [username, email, password]);
+    const result = await query('INSERT INTO employee (username, email, password) VALUES (?, ?, ?)', [username, email, password]);
     con.end((err) => {
       if (err) throw err;
     });
@@ -45,7 +45,7 @@ async function findUser(username, password) {
       if (err) throw err;
     });
     const query = promisify(con.query).bind(con);
-    const findUserResult = await query('SELECT * FROM users WHERE username = ? AND password = ?', [username, password]);
+    const findUserResult = await query('SELECT * FROM employee WHERE username = ? AND password = ?', [username, password]);
     con.end((err) => {
       if (err) throw err;
     });

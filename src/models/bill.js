@@ -11,31 +11,29 @@ async function createBill(orderId) {
     });
     const query = promisify(con.query).bind(con);
     const billResultQuery = `
-    SELECT orders.created AS Date, orders.type AS Order_Type, orders.employee_id AS Staff,
-      orders.id AS Bill_No,
-      orders.total_amount AS Total_amount
+    SELECT created AS Date, type AS Order_Type, employee_id AS Staff,
+      id AS Bill_No,
+      total_amount AS Total_amount
     FROM orders
-    INNER JOIN order_items ON orders.id = order_items.order_id
-    WHERE orders.id = ?;
+    WHERE id = ?;
   `;
 
     const billItemsResultQuery = `
-    SELECT order_items.menu_id AS Menu_Items, order_items.quantity
-    FROM order_items 
-    WHERE order_id = ?;
+    SELECT menu.name AS Item, order_items.quantity
+    FROM menu
+    LEFT JOIN order_items ON menu.id = order_items.menu_id
+    WHERE order_items.order_id = ?;    
   `;
 
     const billResult = await query(billResultQuery, [orderId]);
     const billItemsResult = await query(billItemsResultQuery, [orderId]);
 
     const menuItems = billItemsResult.map((row) => ({
-      Menu_Items: row.Menu_Items,
-      quantity: row.quantity,
-    })).filter((item) => item.Menu_Items && item.quantity);
+      Item: row.Item,
+      Quantity: row.quantity,
+    })).filter((item) => item.Item && item.Quantity);
 
     const finalResult = { ...billResult[0], Ordered_Items: menuItems };
-
-    console.log(finalResult);
 
     con.end((err) => {
       if (err) throw err;
