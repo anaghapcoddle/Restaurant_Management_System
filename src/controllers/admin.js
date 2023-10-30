@@ -8,7 +8,6 @@ let success;
 
 async function viewEmployee(req, res) {
   employeeId = req.body.employee_id;
-  //console.log(employeeId);
   try {
     viewResults = await adminModel.viewEmployee(employeeId);
     res.json(viewResults);
@@ -40,7 +39,21 @@ async function updateEmployee(req, res) {
   }
 }
 
+async function removeEmployee(req, res) {
+  employeeId = req.body.employee_id;
+  try {
+    await adminModel.removeEmployee(employeeId);
+    res.send('Employee data removed successfully');
+    success = true;
+  } catch (error) {
+    res.status(500).send('Internal Server Error');
+    success = false;
+    throw error;
+  }
+}
+
 module.exports = {
   viewEmployee,
   updateEmployee,
+  removeEmployee,
 };

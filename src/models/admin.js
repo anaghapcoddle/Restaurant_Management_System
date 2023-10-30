@@ -12,7 +12,6 @@ async function viewEmployee(employeeId) {
       if (err) throw err;
     });
     const viewResults = await query('SELECT * FROM employee WHERE id = ?', [employeeId]);
-    console.log(viewResults);
     con.end((err) => {
       if (err) throw err;
     });
@@ -22,7 +21,7 @@ async function viewEmployee(employeeId) {
   }
 }
 
-async function updateEmployee(firstName, lastName, phone, address, jobId, salary, email, employeeID) {
+async function updateEmployee(firstName, lastName, phone, address, jobId, salary, email, employeeId) {
   try {
     const con = mysql.createConnection(dbconfig);
     const query = promisify(con.query).bind(con);
@@ -31,8 +30,24 @@ async function updateEmployee(firstName, lastName, phone, address, jobId, salary
     });
     await query(
       'UPDATE employee SET first_name = ? ,last_name = ? ,phone = ? ,address = ? ,job_id = ? ,salary = ?, email = ? WHERE id = ?',
-      [firstName, lastName, phone, address, jobId, salary, email, employeeID],
+      [firstName, lastName, phone, address, jobId, salary, email, employeeId],
     );
+    con.end((err) => {
+      if (err) throw err;
+    });
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function removeEmployee(employeeId) {
+  try {
+    const con = mysql.createConnection(dbconfig);
+    const query = promisify(con.query).bind(con);
+    con.connect((err) => {
+      if (err) throw err;
+    });
+    await query('DELETE FROM employee WHERE id = ?', [employeeId]);
     con.end((err) => {
       if (err) throw err;
     });
@@ -44,4 +59,5 @@ async function updateEmployee(firstName, lastName, phone, address, jobId, salary
 module.exports = {
   viewEmployee,
   updateEmployee,
+  removeEmployee,
 };
