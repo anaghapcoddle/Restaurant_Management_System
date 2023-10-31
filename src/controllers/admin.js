@@ -66,11 +66,11 @@ async function addCategory(req, res) {
   }
 }
 
-async function addCategory(req, res) {
+async function removeCategory(req, res) {
   categoryName = req.body.category_name;
   try {
-    await adminModel.addCategory(categoryName);
-    res.send('Category added successfully');
+    await adminModel.removeCategory(categoryName);
+    res.send('Category removed successfully');
     success = true;
   } catch (error) {
     res.status(500).send('Internal Server Error');
@@ -84,4 +84,5 @@ module.exports = {
   updateEmployee,
   removeEmployee,
   addCategory,
+  removeCategory,
 };

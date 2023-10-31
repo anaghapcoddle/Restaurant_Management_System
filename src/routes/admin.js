@@ -8,5 +8,6 @@ router.get('/employee/view', authMiddleware.verifyToken, adminController.viewEmp
 router.post('/employee/update', authMiddleware.verifyToken, adminController.updateEmployee);
 router.get('/employee/remove', authMiddleware.verifyToken, adminController.removeEmployee);
 router.post('/menu/add-category', authMiddleware.verifyToken, adminController.addCategory);
+router.delete('/menu/remove-category', authMiddleware.verifyToken, adminController.removeCategory);
 
 module.exports = router;
