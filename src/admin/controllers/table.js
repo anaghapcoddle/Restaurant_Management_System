@@ -1,6 +1,6 @@
 const tableModel = require('../models/table');
 
-let tableType; let capacity; let availability; let tableId;
+let tableType; let capacity; let availability; let tableId; let status;
 // eslint-disable-next-line no-unused-vars
 let success;
 
@@ -17,11 +17,16 @@ async function addTableType(req, res) {
   }
 }
 
-async function removeTableType(req, res) {
+async function disableTableType(req, res) {
+  status = req.body.is_disabled;
   tableType = req.body.table_type;
   try {
-    await tableModel.removeTableType(tableType);
-    res.send('Table type removed successfully');
+    await tableModel.disableTableType(status, tableType);
+    if (status === '0') {
+      res.send('Table type enabled successfully');
+    } else {
+      res.send('Table type disabled successfully');
+    }
     success = true;
   } catch (error) {
     res.status(500).send('Internal Server Error');
@@ -60,7 +65,7 @@ async function removeTable(req, res) {
 
 module.exports = {
   addTableType,
-  removeTableType,
+  disableTableType,
   addTable,
   removeTable,
 };

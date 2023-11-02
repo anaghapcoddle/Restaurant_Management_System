@@ -20,14 +20,14 @@ async function addTableType(tableType) {
   }
 }
 
-async function removeTableType(tableType) {
+async function disableTableType(status, tableType) {
   try {
     const con = mysql.createConnection(dbconfig);
     const query = promisify(con.query).bind(con);
     con.connect((err) => {
       if (err) throw err;
     });
-    await query('DELETE FROM table_type WHERE name = ?', [tableType]);
+    await query('UPDATE table_type SET is_disabled = ? WHERE name = ?', [status, tableType]);
     con.end((err) => {
       if (err) throw err;
     });
@@ -70,7 +70,7 @@ async function removeTable(tableId) {
 
 module.exports = {
   addTableType,
-  removeTableType,
+  disableTableType,
   addTable,
   removeTable,
 };
