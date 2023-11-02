@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 const tableModel = require('../models/table');
 
 let tableType; let capacity; let availability; let tableId;

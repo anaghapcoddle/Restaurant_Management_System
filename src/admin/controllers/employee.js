@@ -1,8 +1,7 @@
-/* eslint-disable no-console */
 const employeeModel = require('../models/employee');
 
 let firstName; let lastName; let phone; let address; let jobId;
-let salary; let email; let employeeId; let viewResults;
+let salary; let email; let employeeId; let viewResults; let ordersResults;
 // eslint-disable-next-line no-unused-vars
 let success;
 
@@ -52,8 +51,21 @@ async function removeEmployee(req, res) {
   }
 }
 
+async function employeePerformance(req, res) {
+  try {
+    ordersResults = await employeeModel.employeePerformance();
+    res.json(ordersResults);
+    success = true;
+  } catch (error) {
+    res.status(500).send('Internal Server Error');
+    success = false;
+    throw error;
+  }
+}
+
 module.exports = {
   viewEmployee,
   updateEmployee,
   removeEmployee,
+  employeePerformance,
 };

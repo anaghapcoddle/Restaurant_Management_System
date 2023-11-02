@@ -1,5 +1,4 @@
 /* eslint-disable no-useless-catch */
-/* eslint-disable no-console */
 const { promisify } = require('util');
 const mysql = require('mysql2');
 const dbconfig = require('../../config/db');
@@ -56,8 +55,34 @@ async function removeEmployee(employeeId) {
   }
 }
 
+async function employeePerformance() {
+  try {
+    const con = mysql.createConnection(dbconfig);
+    const query = promisify(con.query).bind(con);
+    con.connect((err) => {
+      if (err) throw err;
+    });
+    const ordersQuery = `
+    SELECT CONCAT(employee.first_name," ",employee.last_name) AS 'Employee Name', COUNT(employee_id) AS 'Number of orders taken'
+    FROM employee
+    INNER JOIN orders ON employee.id=orders.employee_id
+    WHERE orders.created>now() - interval 1 month
+    GROUP BY employee_id
+    ORDER BY COUNT(employee_id) DESC;
+    `;
+    const ordersResult = await query(ordersQuery);
+    con.end((err) => {
+      if (err) throw err;
+    });
+    return ordersResult;
+  } catch (error) {
+    throw error;
+  }
+}
+
 module.exports = {
   viewEmployee,
   updateEmployee,
   removeEmployee,
+  employeePerformance,
 };

@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 const menuModel = require('../models/menu');
 
 let categoryName; let categoryId; let price; let availability;
