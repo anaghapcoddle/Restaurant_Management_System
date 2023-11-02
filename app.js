@@ -13,6 +13,7 @@ const tableRoutes = require('./src/routes/table');
 const billRoutes = require('./src/routes/bill');
 const adminEmployeeRoutes = require('./src/admin/routes/employee');
 const adminMenuRoutes = require('./src/admin/routes/menu');
+const adminTableRoutes = require('./src/admin/routes/table');
 
 app.use('/auth', authRoutes);
 app.use('/menu', menuRoutes);
@@ -21,6 +22,7 @@ app.use('/table', tableRoutes);
 app.use('/bill', billRoutes);
 app.use('/admin', adminEmployeeRoutes);
 app.use('/admin', adminMenuRoutes);
+app.use('/admin', adminTableRoutes);
 
 app.listen(3000, () => {
   console.log('Server is running.');
