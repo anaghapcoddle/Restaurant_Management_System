@@ -52,14 +52,31 @@ async function addTable(capacity, tableTypeId, availability) {
   }
 }
 
-async function removeTable(tableId) {
+async function isTableReserved(tableId) {
+  try {
+    const con = mysql.createConnection(dbconfig);
+    con.connect((err) => {
+      if (err) throw err;
+    });
+    const query = promisify(con.query).bind(con);
+    const reservedTableResult = await query('SELECT * FROM reservation WHERE dining_table_id = ? AND CONCAT(date," ",time) >= CURRENT_TIMESTAMP()', [tableId]);
+    con.end((err) => {
+      if (err) throw err;
+    });
+    return reservedTableResult.length !== 0;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function disableTable(status, tableId) {
   try {
     const con = mysql.createConnection(dbconfig);
     const query = promisify(con.query).bind(con);
     con.connect((err) => {
       if (err) throw err;
     });
-    await query('DELETE FROM dining_table WHERE id = ?', [tableId]);
+    await query('UPDATE dining_table SET is_disabled = ? WHERE id = ?', [status, tableId]);
     con.end((err) => {
       if (err) throw err;
     });
@@ -72,5 +89,6 @@ module.exports = {
   addTableType,
   disableTableType,
   addTable,
-  removeTable,
+  isTableReserved,
+  disableTable,
 };

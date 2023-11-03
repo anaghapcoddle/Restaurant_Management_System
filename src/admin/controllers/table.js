@@ -18,8 +18,8 @@ async function addTableType(req, res) {
 }
 
 async function disableTableType(req, res) {
-  status = req.body.is_disabled;
   tableType = req.body.table_type;
+  status = req.body.is_disabled;
   try {
     await tableModel.disableTableType(status, tableType);
     if (status === '0') {
@@ -50,12 +50,21 @@ async function addTable(req, res) {
   }
 }
 
-async function removeTable(req, res) {
+async function disableTable(req, res) {
   tableId = req.body.table_number;
+  status = req.body.is_disabled;
   try {
-    await tableModel.removeTable(tableId);
-    res.send('Table removed successfully');
-    success = true;
+    if (status === '1') {
+      const isTableReserved = await tableModel.isTableReserved(tableId);
+      if (isTableReserved) {
+        success = false;
+        return res.status(400).send('Table already reservered for upcoming day. Cannot disable table now.');
+      }
+      await tableModel.disableTable(status, tableId);
+      res.send('Table disabled successfully');
+    } else {
+      res.send('Table enabled successfully');
+    }
   } catch (error) {
     res.status(500).send('Internal Server Error');
     success = false;
@@ -67,5 +76,5 @@ module.exports = {
   addTableType,
   disableTableType,
   addTable,
-  removeTable,
+  disableTable,
 };
