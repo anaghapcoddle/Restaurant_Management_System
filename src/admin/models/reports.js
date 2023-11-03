@@ -3,29 +3,28 @@ const { promisify } = require('util');
 const mysql = require('mysql2');
 const dbconfig = require('../../config/db');
 
-async function dailySales() {
+async function monthlySales() {
   try {
     const con = mysql.createConnection(dbconfig);
     const query = promisify(con.query).bind(con);
     con.connect((err) => {
       if (err) throw err;
     });
-    const dailySalesQuery = `
+    const monthlySalesQuery = `
     SELECT COUNT(id) AS 'Total number of orders', SUM(total_amount) AS 'Net Sales'
     FROM orders
-    WHERE DATE(created) = CURDATE();
+    WHERE created>now() - interval 1 month;
       `;
-    const dailySalesResult = await query(dailySalesQuery);
-    console.log(dailySalesQuery);
+    const monthlySalesResult = await query(monthlySalesQuery);
     con.end((err) => {
       if (err) throw err;
     });
-    return dailySalesResult;
+    return monthlySalesResult;
   } catch (error) {
     throw error;
   }
 }
 
 module.exports = {
-  dailySales,
+  monthlySales,
 };

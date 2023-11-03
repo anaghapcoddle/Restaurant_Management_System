@@ -4,6 +4,6 @@ const authMiddleware = require('../../middlewares/authenticate');
 
 const router = express.Router();
 
-router.get('/reports/daily-sales', authMiddleware.verifyToken, reportsController.dailySales);
+router.get('/reports/monthly-sales', authMiddleware.verifyToken, reportsController.monthlySales);
 
 module.exports = router;

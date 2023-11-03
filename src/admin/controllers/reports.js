@@ -1,13 +1,13 @@
 const reportsModel = require('../models/reports');
 
-let dailySalesResult;
+let monthlySalesResult;
 // eslint-disable-next-line no-unused-vars
 let success;
 
-async function dailySales(req, res) {
+async function monthlySales(req, res) {
   try {
-    dailySalesResult = await reportsModel.dailySales();
-    res.json(dailySalesResult);
+    monthlySalesResult = await reportsModel.monthlySales();
+    res.json(monthlySalesResult);
     success = true;
   } catch (error) {
     res.status(500).send('Internal Server Error');
@@ -17,5 +17,5 @@ async function dailySales(req, res) {
 }
 
 module.exports = {
-  dailySales,
+  monthlySales,
 };
