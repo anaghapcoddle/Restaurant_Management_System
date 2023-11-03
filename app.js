@@ -21,10 +21,10 @@ app.use('/menu', menuRoutes);
 app.use('/orders', ordersRoutes);
 app.use('/table', tableRoutes);
 app.use('/bill', billRoutes);
-app.use('/admin', adminEmployeeRoutes);
-app.use('/admin', adminMenuRoutes);
-app.use('/admin', adminTableRoutes);
-app.use('/admin', adminReportsRoutes);
+app.use('/admin/employee', adminEmployeeRoutes);
+app.use('/admin/menu', adminMenuRoutes);
+app.use('/admin/table', adminTableRoutes);
+app.use('/admin/reports', adminReportsRoutes);
 
 app.listen(3000, () => {
   console.log('Server is running.');

@@ -25,6 +25,29 @@ async function monthlySales() {
   }
 }
 
+async function selectedRangeSales(startDate, endDate) {
+  try {
+    const con = mysql.createConnection(dbconfig);
+    const query = promisify(con.query).bind(con);
+    con.connect((err) => {
+      if (err) throw err;
+    });
+    const monthlySalesQuery = `
+    SELECT COUNT(id) AS 'Total number of orders', SUM(total_amount) AS 'Net Sales'
+    FROM orders
+    WHERE created BETWEEN ? AND ?;
+      `;
+    const monthlySalesResult = await query(monthlySalesQuery, [startDate, endDate]);
+    con.end((err) => {
+      if (err) throw err;
+    });
+    return monthlySalesResult;
+  } catch (error) {
+    throw error;
+  }
+}
+
 module.exports = {
   monthlySales,
+  selectedRangeSales,
 };
