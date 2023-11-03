@@ -1,7 +1,7 @@
 const ordersModel = require('../models/orders');
 
-let monthlySalesResult; let selectedRangeSalesResult; let orderHistoryResult;
-let startDate; let endDate;
+let monthlySalesResult; let selectedRangeSalesResult;
+let startDate; let endDate; let orderHistoryResult; let selectedRangeOrderHistoryResult;
 // eslint-disable-next-line no-unused-vars
 let success;
 
@@ -43,8 +43,23 @@ async function orderHistory(req, res) {
   }
 }
 
+async function selectedRangeOrderHistory(req, res) {
+  startDate = req.body.start_date;
+  endDate = req.body.end_date;
+  try {
+    selectedRangeOrderHistoryResult = await ordersModel.selectedRangeOrderHistory(startDate, endDate);
+    res.json(selectedRangeOrderHistoryResult);
+    success = true;
+  } catch (error) {
+    res.status(500).send('Internal Server Error');
+    success = false;
+    throw error;
+  }
+}
+
 module.exports = {
   monthlySales,
   selectedRangeSales,
   orderHistory,
+  selectedRangeOrderHistory,
 };

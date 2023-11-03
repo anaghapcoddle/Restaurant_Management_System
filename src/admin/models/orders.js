@@ -64,18 +64,18 @@ async function orderHistory() {
   }
 }
 
-async function selectedRangeOrderHistory() {
+async function selectedRangeOrderHistory(startDate, endDate) {
   try {
     const con = mysql.createConnection(dbconfig);
     const query = promisify(con.query).bind(con);
     con.connect((err) => {
       if (err) throw err;
     });
-    const orderHistoryResult = await query('SELECT * FROM ORDERS');
+    const selectedRangeOrderHistoryResult = await query('SELECT * FROM ORDERS WHERE DATE(created) BETWEEN ? AND ?', [startDate, endDate]);
     con.end((err) => {
       if (err) throw err;
     });
-    return orderHistoryResult;
+    return selectedRangeOrderHistoryResult;
   } catch (error) {
     throw error;
   }
