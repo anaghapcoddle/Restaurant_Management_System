@@ -1,4 +1,4 @@
-const reportsModel = require('../models/reports');
+const ordersModel = require('../models/orders');
 
 let monthlySalesResult; let selectedRangeSalesResult; let orderHistoryResult;
 let startDate; let endDate;
@@ -7,7 +7,7 @@ let success;
 
 async function monthlySales(req, res) {
   try {
-    monthlySalesResult = await reportsModel.monthlySales();
+    monthlySalesResult = await ordersModel.monthlySales();
     res.json(monthlySalesResult);
     success = true;
   } catch (error) {
@@ -21,7 +21,7 @@ async function selectedRangeSales(req, res) {
   startDate = req.body.start_date;
   endDate = req.body.end_date;
   try {
-    selectedRangeSalesResult = await reportsModel.selectedRangeSales(startDate, endDate);
+    selectedRangeSalesResult = await ordersModel.selectedRangeSales(startDate, endDate);
     res.json(selectedRangeSalesResult);
     success = true;
   } catch (error) {
@@ -33,7 +33,7 @@ async function selectedRangeSales(req, res) {
 
 async function orderHistory(req, res) {
   try {
-    orderHistoryResult = await reportsModel.orderHistory();
+    orderHistoryResult = await ordersModel.orderHistory();
     res.json(orderHistoryResult);
     success = true;
   } catch (error) {
