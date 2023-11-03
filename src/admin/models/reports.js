@@ -47,7 +47,25 @@ async function selectedRangeSales(startDate, endDate) {
   }
 }
 
+async function orderHistory() {
+  try {
+    const con = mysql.createConnection(dbconfig);
+    const query = promisify(con.query).bind(con);
+    con.connect((err) => {
+      if (err) throw err;
+    });
+    const orderHistoryResult = await query('SELECT * FROM ORDERS');
+    con.end((err) => {
+      if (err) throw err;
+    });
+    return orderHistoryResult;
+  } catch (error) {
+    throw error;
+  }
+}
+
 module.exports = {
   monthlySales,
   selectedRangeSales,
+  orderHistory,
 };
