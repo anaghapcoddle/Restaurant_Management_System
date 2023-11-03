@@ -32,16 +32,16 @@ async function selectedRangeSales(startDate, endDate) {
     con.connect((err) => {
       if (err) throw err;
     });
-    const monthlySalesQuery = `
+    const selectedRangeSalesQuery = `
     SELECT COUNT(id) AS 'Total number of orders', SUM(total_amount) AS 'Net Sales'
     FROM orders
-    WHERE created BETWEEN ? AND ?;
+    WHERE DATE(created) BETWEEN ? AND ?;
       `;
-    const monthlySalesResult = await query(monthlySalesQuery, [startDate, endDate]);
+    const selectedRangeSalesResult = await query(selectedRangeSalesQuery, [startDate, endDate]);
     con.end((err) => {
       if (err) throw err;
     });
-    return monthlySalesResult;
+    return selectedRangeSalesResult;
   } catch (error) {
     throw error;
   }
