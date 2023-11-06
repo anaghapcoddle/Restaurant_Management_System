@@ -68,7 +68,7 @@ async function orderHistoryInitialLoad(pageNumber, previous, next) {
       pageNumberInt += 1;
     }
     offset = (pageNumberInt - 1) * 2;
-    const orderHistoryResult = await query('SELECT * FROM ORDERS LIMIT 15 OFFSET ?', [offset]);
+    const orderHistoryResult = await query('SELECT * FROM ORDERS WHERE created > now() - interval 1 month LIMIT 15 OFFSET ? ', [offset]);
     con.end((err) => {
       if (err) throw err;
     });
