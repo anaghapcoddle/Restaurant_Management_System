@@ -16,7 +16,6 @@ async function signup(req, res) {
   }
 
   const isUserNameExisting = await userModel.isExistingUser(signupUsername);
-  // console.log(isUserNameExisting);
   if (isUserNameExisting) {
     success = false;
     return res.status(400).send('Username is already in use');

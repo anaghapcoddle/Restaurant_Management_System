@@ -2,6 +2,7 @@ const ordersModel = require('../models/orders');
 
 let monthlySalesResult; let selectedRangeSalesResult;
 let startDate; let endDate; let orderHistoryResult; let selectedRangeOrderHistoryResult;
+let pageNumber; let previous; let next;
 // eslint-disable-next-line no-unused-vars
 let success;
 
@@ -31,9 +32,13 @@ async function selectedRangeSales(req, res) {
   }
 }
 
-async function orderHistory(req, res) {
+async function orderHistoryInitialLoad(req, res) {
+  pageNumber = req.body.page_number;
+  previous = req.body.previous;
+  next = req.body.next;
+  // previousOrNext = req.body.previous_or_next;
   try {
-    orderHistoryResult = await ordersModel.orderHistory();
+    orderHistoryResult = await ordersModel.orderHistoryInitialLoad(pageNumber, previous, next);
     res.json(orderHistoryResult);
     success = true;
   } catch (error) {
@@ -60,6 +65,6 @@ async function selectedRangeOrderHistory(req, res) {
 module.exports = {
   monthlySales,
   selectedRangeSales,
-  orderHistory,
+  orderHistoryInitialLoad,
   selectedRangeOrderHistory,
 };

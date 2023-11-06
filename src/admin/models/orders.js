@@ -3,6 +3,8 @@ const { promisify } = require('util');
 const mysql = require('mysql2');
 const dbconfig = require('../../config/db');
 
+let offset; let pageNumberInt; let previousInt; let nextInt;
+
 async function monthlySales() {
   try {
     const con = mysql.createConnection(dbconfig);
@@ -47,14 +49,26 @@ async function selectedRangeSales(startDate, endDate) {
   }
 }
 
-async function orderHistory() {
+async function orderHistoryInitialLoad(pageNumber, previous, next) {
   try {
     const con = mysql.createConnection(dbconfig);
     const query = promisify(con.query).bind(con);
     con.connect((err) => {
       if (err) throw err;
     });
-    const orderHistoryResult = await query('SELECT * FROM ORDERS');
+
+    pageNumberInt = parseInt(pageNumber, 10);
+    previousInt = parseInt(previous, 10);
+    nextInt = parseInt(next, 10);
+
+    if (previousInt && pageNumberInt > 1) {
+      pageNumberInt -= 1;
+    }
+    if (nextInt) {
+      pageNumberInt += 1;
+    }
+    offset = (pageNumberInt - 1) * 2;
+    const orderHistoryResult = await query('SELECT * FROM ORDERS LIMIT 15 OFFSET ?', [offset]);
     con.end((err) => {
       if (err) throw err;
     });
@@ -84,6 +98,6 @@ async function selectedRangeOrderHistory(startDate, endDate) {
 module.exports = {
   monthlySales,
   selectedRangeSales,
-  orderHistory,
+  orderHistoryInitialLoad,
   selectedRangeOrderHistory,
 };
