@@ -3,7 +3,7 @@ const { promisify } = require('util');
 const mysql = require('mysql2');
 const dbconfig = require('../../config/db');
 
-let offset; let pageNumberInt; let previousInt; let nextInt;
+let offset;
 
 async function monthlySales() {
   try {
@@ -57,17 +57,13 @@ async function orderHistoryInitialLoad(pageNumber, previous, next) {
       if (err) throw err;
     });
 
-    pageNumberInt = parseInt(pageNumber, 10);
-    previousInt = parseInt(previous, 10);
-    nextInt = parseInt(next, 10);
-
-    if (previousInt && pageNumberInt > 1) {
-      pageNumberInt -= 1;
+    if (previous && pageNumber > 1) {
+      pageNumber -= 1;
     }
-    if (nextInt) {
-      pageNumberInt += 1;
+    if (next) {
+      pageNumber += 1;
     }
-    offset = (pageNumberInt - 1) * 2;
+    offset = (pageNumber - 1) * 2;
     const orderHistoryResult = await query('SELECT * FROM ORDERS WHERE created > now() - interval 1 month LIMIT 15 OFFSET ? ', [offset]);
     con.end((err) => {
       if (err) throw err;

@@ -52,7 +52,25 @@ async function add(employeeId, diningTableId, type, status, deliveryStatus, item
   }
 }
 
+async function update(orderNumber) {
+  try {
+    const con = mysql.createConnection(dbconfig);
+    con.connect((err) => {
+      if (err) throw err;
+    });
+    const query = promisify(con.query).bind(con);
+
+    await query('INSERT INTO order_items (order_id, menu_id, quantity, amount) VALUES (?, ?, ?, ?)', [orderId, item.name, item.quantity, itemTotalPrice]);
+    con.end((err) => {
+      if (err) throw err;
+    });
+  } catch (error) {
+    throw error;
+  }
+}
+
 module.exports = {
   fetch,
   add,
+  update,
 };

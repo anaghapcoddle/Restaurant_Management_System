@@ -33,10 +33,10 @@ async function selectedRangeSales(req, res) {
 }
 
 async function orderHistoryInitialLoad(req, res) {
-  pageNumber = req.body.page_number;
-  previous = req.body.previous;
-  next = req.body.next;
-  // previousOrNext = req.body.previous_or_next;
+  pageNumber = parseInt(req.body.page_number, 10);
+  previous = parseInt(req.body.previous, 10);
+  next = parseInt(req.body.next, 10);
+
   try {
     orderHistoryResult = await ordersModel.orderHistoryInitialLoad(pageNumber, previous, next);
     res.json(orderHistoryResult);
