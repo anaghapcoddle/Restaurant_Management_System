@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 const billModel = require('../models/bill');
 
 let billResults; let orderId;

@@ -1,8 +1,7 @@
-/* eslint-disable no-console */
 const jwt = require('jsonwebtoken');
 const userModel = require('../models/user');
 
-let signupUsername; let signupEmail; let signupPassword;
+let signupUsername; let signupEmail; let signupPassword; let signupResult; let message;
 // eslint-disable-next-line no-unused-vars
 let success;
 
@@ -23,9 +22,8 @@ async function signup(req, res) {
 
   try {
     signupResult = await userModel.addUser(signupUsername, signupEmail, signupPassword);
-    const message = `User account created successfully. Employee id is : ${signupResult}`;
+    message = `User account created successfully. Employee id is : ${signupResult}`;
     res.send(message);
-    //res.send('User account created successfully');
     success = true;
   } catch (error) {
     res.status(500).send('Internal Server Error');

@@ -6,5 +6,7 @@ const router = express.Router();
 
 router.get('/fetch', authMiddleware.verifyToken, ordersController.fetch);
 router.post('/add', authMiddleware.verifyToken, ordersController.add);
+router.put('/update', authMiddleware.verifyToken, ordersController.update);
+router.delete('/remove', authMiddleware.verifyToken, ordersController.remove);
 
 module.exports = router;

@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 const menuModel = require('../models/menu');
 
 let fetchResults; let item; let status;

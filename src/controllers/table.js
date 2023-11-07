@@ -1,5 +1,4 @@
 /* eslint-disable no-useless-catch */
-/* eslint-disable no-console */
 const tableModel = require('../models/table');
 
 // eslint-disable-next-line no-unused-vars
