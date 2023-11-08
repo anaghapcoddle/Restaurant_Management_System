@@ -14,8 +14,8 @@ async function signup(req, res) {
     return res.status(400).send('All fields are required');
   }
 
-  const isUserNameExisting = await userModel.isExistingUser(signupUsername);
-  if (isUserNameExisting) {
+  const isUserNameExisting = await userModel.findUser(signupUsername, signupPassword);
+  if (isUserNameExisting.length !== 0) {
     success = false;
     return res.status(400).send('Username is already in use');
   }

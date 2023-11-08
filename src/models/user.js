@@ -3,23 +3,6 @@ const { promisify } = require('util');
 const mysql = require('mysql2');
 const dbconfig = require('../config/db');
 
-async function isExistingUser(username) {
-  try {
-    const con = mysql.createConnection(dbconfig);
-    con.connect((err) => {
-      if (err) throw err;
-    });
-    const query = promisify(con.query).bind(con);
-    const existingResult = await query('SELECT * FROM employee WHERE username = ?', [username]);
-    con.end((err) => {
-      if (err) throw err;
-    });
-    return existingResult.length !== 0;
-  } catch (error) {
-    throw error;
-  }
-}
-
 async function addUser(username, email, password) {
   try {
     const con = mysql.createConnection(dbconfig);
@@ -56,7 +39,6 @@ async function findUser(username, password) {
 }
 
 module.exports = {
-  isExistingUser,
   addUser,
   findUser,
 };
