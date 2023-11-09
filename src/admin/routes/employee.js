@@ -5,7 +5,7 @@ const authMiddleware = require('../../middlewares/authenticate');
 const router = express.Router();
 
 router.get('/view', authMiddleware.verifyToken, employeeController.viewEmployee);
-router.post('/update', authMiddleware.verifyToken, employeeController.updateEmployee);
+router.put('/update', authMiddleware.verifyToken, employeeController.updateEmployee);
 router.delete('/remove', authMiddleware.verifyToken, employeeController.removeEmployee);
 router.get('/performance', authMiddleware.verifyToken, employeeController.employeePerformance);
 
