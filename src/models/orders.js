@@ -1,5 +1,4 @@
 /* eslint-disable no-await-in-loop */
-/* eslint-disable no-useless-catch */
 const { promisify } = require('util');
 const mysql = require('mysql2');
 const dbconfig = require('../config/db');
@@ -12,15 +11,19 @@ async function fetch() {
     const con = mysql.createConnection(dbconfig);
     const query = promisify(con.query).bind(con);
     con.connect((err) => {
-      if (err) throw err;
+      if (err) {
+        console.error('Error:', err);
+      }
     });
     const results = await query('SELECT * FROM orders');
     con.end((err) => {
-      if (err) throw err;
+      if (err) {
+        console.error('Error:', err);
+      }
     });
     return results;
   } catch (error) {
-    throw error;
+    console.error('Error:', error);
   }
 }
 
@@ -28,7 +31,9 @@ async function add(employeeId, diningTableId, type, status, deliveryStatus, item
   try {
     const con = mysql.createConnection(dbconfig);
     con.connect((err) => {
-      if (err) throw err;
+      if (err) {
+        console.error('Error:', err);
+      }
     });
     const query = promisify(con.query).bind(con);
     const orderResult = await query(
@@ -47,10 +52,12 @@ async function add(employeeId, diningTableId, type, status, deliveryStatus, item
     }
     await query('UPDATE orders SET total_amount = ? WHERE id = ?', [totalOrderPrice, orderId]);
     con.end((err) => {
-      if (err) throw err;
+      if (err) {
+        console.error('Error:', err);
+      }
     });
   } catch (error) {
-    throw error;
+    console.error('Error:',error);
   }
 }
 
@@ -58,7 +65,9 @@ async function update(orderId, updateItems) {
   try {
     const con = mysql.createConnection(dbconfig);
     con.connect((err) => {
-      if (err) throw err;
+      if (err) {
+        console.error('Error:', err);
+      }
     });
     const query = promisify(con.query).bind(con);
     const totalPriceResult = await query('SELECT total_amount FROM orders WHERE id = ?', [orderId]);
@@ -85,10 +94,12 @@ async function update(orderId, updateItems) {
     }
     await query('UPDATE orders SET total_amount = ? WHERE id = ?', [totalPrice, orderId]);
     con.end((err) => {
-      if (err) throw err;
+      if (err) {
+        console.error('Error:', err);
+      }
     });
   } catch (error) {
-    throw error;
+    console.error('Error:', error);
   }
 }
 
@@ -96,7 +107,9 @@ async function isItemExisting(orderId, removeItems) {
   try {
     const con = mysql.createConnection(dbconfig);
     con.connect((err) => {
-      if (err) throw err;
+      if (err) {
+        console.error('Error:', err);
+      }
     });
     const query = promisify(con.query).bind(con);
     let itemExistResult;
@@ -105,7 +118,9 @@ async function isItemExisting(orderId, removeItems) {
       itemExistResult = await query('SELECT * FROM order_items WHERE order_id = ? AND menu_id = ? AND quantity > 0', [orderId, item.name, quantityOrdered]);
     }
     con.end((err) => {
-      if (err) throw err;
+      if (err) {
+        console.error('Error:', err);
+      }
     });
     return itemExistResult.length === 0;
   } catch (error) {
@@ -117,7 +132,9 @@ async function remove(orderId, removeItems) {
   try {
     const con = mysql.createConnection(dbconfig);
     con.connect((err) => {
-      if (err) throw err;
+      if (err) {
+        console.error('Error:', err);
+      }
     });
     const query = promisify(con.query).bind(con);
     const totalPriceResult = await query('SELECT total_amount FROM orders WHERE id = ?', [orderId]);
@@ -138,7 +155,9 @@ async function remove(orderId, removeItems) {
     }
     await query('UPDATE orders SET total_amount = ? WHERE id = ?', [totalPrice, orderId]);
     con.end((err) => {
-      if (err) throw err;
+      if (err) {
+        console.error('Error:', err);
+      }
     });
   } catch (error) {
     throw error;

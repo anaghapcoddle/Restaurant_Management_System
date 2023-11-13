@@ -3,11 +3,12 @@ const mysql = require('mysql2');
 const dbconfig = require('../config/db');
 
 async function createBill(orderId) {
-  // eslint-disable-next-line no-useless-catch
   try {
     const con = mysql.createConnection(dbconfig);
     con.connect((err) => {
-      if (err) throw err;
+      if (err) {
+        console.error('Error:', err);
+      }
     });
     const query = promisify(con.query).bind(con);
     const billResultQuery = `
@@ -36,11 +37,13 @@ async function createBill(orderId) {
     const finalResult = { ...billResult[0], Ordered_Items: menuItems };
 
     con.end((err) => {
-      if (err) throw err;
+      if (err) {
+        console.error('Error:', err);
+      }
     });
     return finalResult;
   } catch (error) {
-    throw error;
+    console.error('Error:', error);
   }
 }
 

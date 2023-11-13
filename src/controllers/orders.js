@@ -8,10 +8,7 @@ async function fetch(req, res) {
       data: results,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: 'Internal Server Error',
-    });
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
     console.error('Error:', error);
   }
 }
@@ -38,10 +35,7 @@ async function add(req, res) {
       message: 'Data inserted successfully',
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: 'Internal Server Error',
-    });
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
     console.error('Error:', error);
   }
 }
@@ -63,10 +57,7 @@ async function update(req, res) {
       message: 'Data updated successfully',
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: 'Internal Server Error',
-    });
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
     console.error('Error:', error);
   }
 }
@@ -95,10 +86,7 @@ async function remove(req, res) {
       message: 'Data removed successfully',
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: 'Internal Server Error',
-    });
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
     console.error('Error:', error);
   }
 }

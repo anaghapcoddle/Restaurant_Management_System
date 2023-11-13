@@ -1,47 +1,43 @@
 const jwt = require('jsonwebtoken');
 const userModel = require('../models/user');
 
-let signupUsername; let signupEmail; let signupPassword; let signupResult; let message;
-// eslint-disable-next-line no-unused-vars
-let success;
-
 async function signup(req, res) {
-  signupUsername = req.body.username;
-  signupEmail = req.body.email;
-  signupPassword = req.body.password;
-  if (!signupUsername || !signupEmail || !signupPassword) {
-    success = false;
-    return res.status(400).send('All fields are required');
-  }
-
-  const isUserNameExisting = await userModel.findUser(signupUsername, signupPassword);
-  if (isUserNameExisting.length !== 0) {
-    success = false;
-    return res.status(400).send('Username is already in use');
-  }
-
   try {
-    signupResult = await userModel.addUser(signupUsername, signupEmail, signupPassword);
-    message = `User account created successfully. Employee id is : ${signupResult}`;
-    res.send(message);
-    success = true;
+    const signupUsername = req.body.username;
+    const signupEmail = req.body.email;
+    const signupPassword = req.body.password;
+    if (!signupUsername || !signupEmail || !signupPassword) {
+      res.status(400).json({
+        success: false,
+        message: 'All fields are required',
+      });
+    }
+
+    const isUserNameExisting = await userModel.findUser(signupUsername, signupPassword);
+    if (isUserNameExisting.length !== 0) {
+      res.status(400).json({
+        success: false,
+        message: 'Username is already in use',
+      });
+    }
+    const signupResult = await userModel.addUser(signupUsername, signupEmail, signupPassword);
+    res.status(201).json({
+      success: true,
+      message: `User account created successfully. Employee id is : ${signupResult}`,
+    });
   } catch (error) {
-    res.status(500).send('Internal Server Error');
-    success = false;
-    throw error;
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+    console.error('Error:', error);
   }
 }
 
-let loginUsername; let loginPassword;
-
 async function login(req, res) {
-  loginUsername = req.body.username;
-  loginPassword = req.body.password;
+  const loginUsername = req.body.username;
+  const loginPassword = req.body.password;
   try {
     const result = await userModel.findUser(loginUsername, loginPassword);
     if (result.length === 0) {
-      res.status(500).send({ error: 'Login failed' });
-      success = false;
+      res.status(500).json({ success: false, message: 'Login failed' });
     } else {
       const resp = {
         id: result[0].id,
@@ -49,13 +45,11 @@ async function login(req, res) {
         role: result[0].role,
       };
       const token = jwt.sign(resp, 'secret', { expiresIn: 86400 });
-
-      res.status(200).send({ auth: true, token });
-      success = true;
+      res.status(200).send({ auth: true, success: true, token });
     }
   } catch (error) {
-    res.status(500).send({ error: 'Login failed' });
-    success = false;
+    res.status(500).send({ success: false, message: 'Login failed' });
+    console.error('Error:', error);
   }
 }
 

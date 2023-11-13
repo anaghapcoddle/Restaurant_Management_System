@@ -8,10 +8,7 @@ async function fetch(req, res) {
       data: results,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: 'Internal Server Error',
-    });
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
     console.error('Error:', error);
   }
 }
@@ -26,10 +23,7 @@ async function updateAvailability(req, res) {
       message: 'Data changed successfully',
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: 'Internal Server Error',
-    });
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
     console.error('Error:', error);
   }
 }

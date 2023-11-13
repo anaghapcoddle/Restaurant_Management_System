@@ -1,21 +1,17 @@
 const jwt = require('jsonwebtoken');
 
-// eslint-disable-next-line no-unused-vars
-let success;
-
 function verifyToken(req, res, next) {
-  const authHeader = req.headers.authorization;
-  if (authHeader === undefined) {
-    res.status(401).send({ error: 'No token provided' });
-    success = false;
-  }
-  const token = authHeader.split(' ')[1];
   try {
+    const authHeader = req.headers.authorization;
+    if (authHeader === undefined) {
+      res.status(401).send({ success: false, message: 'No token provided' });
+    }
+    const token = authHeader.split(' ')[1];
     jwt.verify(token, 'secret');
     next();
   } catch (error) {
-    res.status(500).send({ error: 'Authentication failed' });
-    throw error;
+    res.status(500).send({ success: false, message: 'Authentication failed' });
+    console.error('Error:', error);
   }
 }
 
