@@ -1,19 +1,19 @@
 const billModel = require('../models/bill');
 
-let billResults; let orderId;
-// eslint-disable-next-line no-unused-vars
-let success;
-
 async function createBill(req, res) {
-  orderId = req.body.order_id;
   try {
-    billResults = await billModel.createBill(orderId);
-    res.json(billResults);
-    success = true;
+    const orderId = req.body.order_id;
+    const results = await billModel.createBill(orderId);
+    res.status(200).json({
+      success: true,
+      data: results,
+    });
   } catch (error) {
-    res.status(500).send('Internal Server Error');
-    success = false;
-    throw error;
+    res.status(500).json({
+      success: false,
+      message: 'Internal Server Error',
+    });
+    console.error('Error:', error);
   }
 }
 

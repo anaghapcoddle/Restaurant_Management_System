@@ -102,7 +102,7 @@ async function isItemExisting(orderId, removeItems) {
     let itemExistResult;
     // eslint-disable-next-line no-restricted-syntax
     for (const item of removeItems) {
-      itemExistResult = await query('SELECT * FROM order_items WHERE order_id = ? AND menu_id = ?', [orderId, item.name]);
+      itemExistResult = await query('SELECT * FROM order_items WHERE order_id = ? AND menu_id = ? AND quantity > 0', [orderId, item.name, quantityOrdered]);
     }
     con.end((err) => {
       if (err) throw err;

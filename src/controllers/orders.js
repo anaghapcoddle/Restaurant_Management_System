@@ -1,88 +1,105 @@
-/* eslint-disable no-useless-catch */
 const ordersModel = require('../models/orders');
-
-let fetchResults;
-// eslint-disable-next-line no-unused-vars
-let success;
-let employeeId; let diningTableId; let type; let status; let deliveryStatus; let items;
-let orderNumber; let updateItems; let removeItems; let isItemExisting;
 
 async function fetch(req, res) {
   try {
-    fetchResults = await ordersModel.fetch();
-    res.json(fetchResults);
-    success = true;
+    const results = await ordersModel.fetch();
+    res.status(200).json({
+      success: true,
+      data: results,
+    });
   } catch (error) {
-    res.status(500).send('Internal Server Error');
-    success = false;
-    throw error;
+    res.status(500).json({
+      success: false,
+      message: 'Internal Server Error',
+    });
+    console.error('Error:', error);
   }
 }
 
 async function add(req, res) {
-  employeeId = req.body.employee_id;
-  diningTableId = req.body.dining_table_id;
-  type = req.body.type;
-  status = req.body.status;
-  deliveryStatus = req.body.delivery_status;
-  items = [];
-
-  for (let i = 0; req.body[`item${i}_name`]; i += 1) {
-    const item = {
-      name: req.body[`item${i}_name`],
-      quantity: parseFloat(req.body[`item${i}_quantity`]),
-    };
-    items.push(item);
-  }
   try {
+    const employeeId = req.body.employee_id;
+    const diningTableId = req.body.dining_table_id;
+    const { type } = req.body;
+    const { status } = req.body;
+    const deliveryStatus = req.body.delivery_status;
+    const items = [];
+
+    for (let i = 0; req.body[`item${i}_name`]; i += 1) {
+      const item = {
+        name: req.body[`item${i}_name`],
+        quantity: parseFloat(req.body[`item${i}_quantity`]),
+      };
+      items.push(item);
+    }
     await ordersModel.add(employeeId, diningTableId, type, status, deliveryStatus, items);
-    res.send('Data inserted successfully');
-    success = true;
+    res.status(201).json({
+      success: true,
+      message: 'Data inserted successfully',
+    });
   } catch (error) {
-    throw error;
+    res.status(500).json({
+      success: false,
+      message: 'Internal Server Error',
+    });
+    console.error('Error:', error);
   }
 }
 
 async function update(req, res) {
-  orderNumber = req.body.order_number;
-  updateItems = [];
-  for (let i = 0; req.body[`item${i}_name`]; i += 1) {
-    const item = {
-      name: req.body[`item${i}_name`],
-      quantity: parseFloat(req.body[`item${i}_quantity`]),
-    };
-    updateItems.push(item);
-  }
   try {
+    const orderNumber = req.body.order_number;
+    const updateItems = [];
+    for (let i = 0; req.body[`item${i}_name`]; i += 1) {
+      const item = {
+        name: req.body[`item${i}_name`],
+        quantity: parseFloat(req.body[`item${i}_quantity`]),
+      };
+      updateItems.push(item);
+    }
     await ordersModel.update(orderNumber, updateItems);
-    res.send('Data updated successfully');
-    success = true;
+    res.status(200).json({
+      success: true,
+      message: 'Data updated successfully',
+    });
   } catch (error) {
-    throw error;
+    res.status(500).json({
+      success: false,
+      message: 'Internal Server Error',
+    });
+    console.error('Error:', error);
   }
 }
 
 async function remove(req, res) {
-  orderNumber = req.body.order_number;
-  removeItems = [];
-  for (let i = 0; req.body[`item${i}_name`]; i += 1) {
-    const item = {
-      name: req.body[`item${i}_name`],
-      quantity: parseFloat(req.body[`item${i}_quantity`]),
-    };
-    removeItems.push(item);
-  }
-  isItemExisting = await ordersModel.isItemExisting(orderNumber, removeItems);
-  if (isItemExisting) {
-    success = false;
-    return res.status(400).send('Contains items which are not ordered.');
-  }
   try {
+    const orderNumber = req.body.order_number;
+    const removeItems = [];
+    for (let i = 0; req.body[`item${i}_name`]; i += 1) {
+      const item = {
+        name: req.body[`item${i}_name`],
+        quantity: parseFloat(req.body[`item${i}_quantity`]),
+      };
+      removeItems.push(item);
+    }
+    const isItemExisting = await ordersModel.isItemExisting(orderNumber, removeItems);
+    if (isItemExisting) {
+      res.status(400).json({
+        success: false,
+        message: 'Contains items which are not ordered or more number than ordered',
+      });
+    }
     await ordersModel.remove(orderNumber, removeItems);
-    res.send('Data removed successfully');
-    success = true;
+    res.status(200).json({
+      success: false,
+      message: 'Data removed successfully',
+    });
   } catch (error) {
-    throw error;
+    res.status(500).json({
+      success: false,
+      message: 'Internal Server Error',
+    });
+    console.error('Error:', error);
   }
 }
 

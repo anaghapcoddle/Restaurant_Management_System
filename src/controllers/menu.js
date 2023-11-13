@@ -1,32 +1,36 @@
 const menuModel = require('../models/menu');
 
-let fetchResults; let item; let status;
-// eslint-disable-next-line no-unused-vars
-let success;
-
 async function fetch(req, res) {
   try {
-    fetchResults = await menuModel.fetch();
-    res.json(fetchResults);
-    success = true;
+    const results = await menuModel.fetch();
+    res.status(200).json({
+      success: true,
+      data: results,
+    });
   } catch (error) {
-    res.status(500).send('Internal Server Error');
-    success = false;
-    throw error;
+    res.status(500).json({
+      success: false,
+      message: 'Internal Server Error',
+    });
+    console.error('Error:', error);
   }
 }
 
 async function updateAvailability(req, res) {
-  item = req.body.item;
-  status = req.body.availabity_status;
   try {
+    const { item } = req.body;
+    const status = req.body.availabity_status;
     await menuModel.updateAvailability(item, status);
-    res.send('Data changed successfully');
-    success = true;
+    res.status(500).json({
+      success: true,
+      message: 'Data changed successfully',
+    });
   } catch (error) {
-    res.status(500).send('Internal Server Error');
-    success = false;
-    throw error;
+    res.status(500).json({
+      success: false,
+      message: 'Internal Server Error',
+    });
+    console.error('Error:', error);
   }
 }
 

@@ -10,7 +10,7 @@ function authorizePage(permissions) {
           res.status(401).send({ error: 'Authentication failed' });
         } else {
           const userRole = decoded.role;
-          console.log(userRole);
+          // console.log(userRole);
 
           if (permissions.includes(userRole)) {
             next();
