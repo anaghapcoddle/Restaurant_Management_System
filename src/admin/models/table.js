@@ -1,82 +1,40 @@
-const { promisify } = require('util');
-const mysql = require('mysql2');
 const dbconfig = require('../../config/db');
 
 async function addTableType(tableType) {
+  const db = dbconfig.makeDb();
   try {
-    const con = mysql.createConnection(dbconfig);
-    const query = promisify(con.query).bind(con);
-    con.connect((err) => {
-      if (err) {
-        console.error('Error:', err);
-      }
-    });
-    await query('INSERT INTO table_type (name) VALUES (?)', [tableType]);
-    con.end((err) => {
-      if (err) {
-        console.error('Error:', err);
-      }
-    });
+    await db.query('INSERT INTO table_type (name) VALUES (?)', [tableType]);
+    await db.close();
   } catch (error) {
     console.error('Error:', error);
   }
 }
 
 async function disableTableType(status, tableType) {
+  const db = dbconfig.makeDb();
   try {
-    const con = mysql.createConnection(dbconfig);
-    const query = promisify(con.query).bind(con);
-    con.connect((err) => {
-      if (err) {
-        console.error('Error:', err);
-      }
-    });
-    await query('UPDATE table_type SET is_disabled = ? WHERE name = ?', [status, tableType]);
-    con.end((err) => {
-      if (err) {
-        console.error('Error:', err);
-      }
-    });
+    await db.query('UPDATE table_type SET is_disabled = ? WHERE name = ?', [status, tableType]);
+    await db.close();
   } catch (error) {
     console.error('Error:', error);
   }
 }
 
 async function addTable(capacity, tableTypeId, availability) {
+  const db = dbconfig.makeDb();
   try {
-    const con = mysql.createConnection(dbconfig);
-    const query = promisify(con.query).bind(con);
-    con.connect((err) => {
-      if (err) {
-        console.error('Error:', err);
-      }
-    });
-    await query('INSERT INTO dining_table (capacity, table_type_id, availability) VALUES (?,?,?)', [capacity, tableTypeId, availability]);
-    con.end((err) => {
-      if (err) {
-        console.error('Error:', err);
-      }
-    });
+    await db.query('INSERT INTO dining_table (capacity, table_type_id, availability) VALUES (?,?,?)', [capacity, tableTypeId, availability]);
+    await db.close();
   } catch (error) {
     console.error('Error:', error);
   }
 }
 
 async function isTableReserved(tableId) {
+  const db = dbconfig.makeDb();
   try {
-    const con = mysql.createConnection(dbconfig);
-    con.connect((err) => {
-      if (err) {
-        console.error('Error:', err);
-      }
-    });
-    const query = promisify(con.query).bind(con);
-    const reservedTableResult = await query('SELECT * FROM reservation WHERE dining_table_id = ? AND CONCAT(date," ",time) >= CURRENT_TIMESTAMP()', [tableId]);
-    con.end((err) => {
-      if (err) {
-        console.error('Error:', err);
-      }
-    });
+    const reservedTableResult = await db.query('SELECT * FROM reservation WHERE dining_table_id = ? AND CONCAT(date," ",time) >= CURRENT_TIMESTAMP()', [tableId]);
+    await db.close();
     return reservedTableResult.length !== 0;
   } catch (error) {
     console.error('Error:', error);
@@ -84,20 +42,10 @@ async function isTableReserved(tableId) {
 }
 
 async function disableTable(status, tableId) {
+  const db = dbconfig.makeDb();
   try {
-    const con = mysql.createConnection(dbconfig);
-    const query = promisify(con.query).bind(con);
-    con.connect((err) => {
-      if (err) {
-        console.error('Error:', err);
-      }
-    });
-    await query('UPDATE dining_table SET is_disabled = ? WHERE id = ?', [status, tableId]);
-    con.end((err) => {
-      if (err) {
-        console.error('Error:', err);
-      }
-    });
+    await db.query('UPDATE dining_table SET is_disabled = ? WHERE id = ?', [status, tableId]);
+    await db.close();
   } catch (error) {
     console.error('Error:', error);
   }

@@ -1,27 +1,15 @@
-const { promisify } = require('util');
-const mysql = require('mysql2');
 const dbconfig = require('../../config/db');
 
 async function monthlySales() {
+  const db = dbconfig.makeDb();
   try {
-    const con = mysql.createConnection(dbconfig);
-    const query = promisify(con.query).bind(con);
-    con.connect((err) => {
-      if (err) {
-        console.error('Error:', err);
-      }
-    });
     const monthlySalesQuery = `
     SELECT COUNT(id) AS 'Total number of orders', SUM(total_amount) AS 'Net Sales'
     FROM orders
     WHERE created>now() - interval 1 month;
       `;
-    const monthlySalesResult = await query(monthlySalesQuery);
-    con.end((err) => {
-      if (err) {
-        console.error('Error:', err);
-      }
-    });
+    const monthlySalesResult = await db.query(monthlySalesQuery);
+    await db.close();
     return monthlySalesResult;
   } catch (error) {
     console.error('Error:', error);
@@ -29,25 +17,15 @@ async function monthlySales() {
 }
 
 async function selectedRangeSales(startDate, endDate) {
+  const db = dbconfig.makeDb();
   try {
-    const con = mysql.createConnection(dbconfig);
-    const query = promisify(con.query).bind(con);
-    con.connect((err) => {
-      if (err) {
-        console.error('Error:', err);
-      }
-    });
     const selectedRangeSalesQuery = `
     SELECT COUNT(id) AS 'Total number of orders', SUM(total_amount) AS 'Net Sales'
     FROM orders
     WHERE DATE(created) BETWEEN ? AND ?;
       `;
-    const selectedRangeSalesResult = await query(selectedRangeSalesQuery, [startDate, endDate]);
-    con.end((err) => {
-      if (err) {
-        console.error('Error:', err);
-      }
-    });
+    const selectedRangeSalesResult = await db.query(selectedRangeSalesQuery, [startDate, endDate]);
+    await db.close();
     return selectedRangeSalesResult;
   } catch (error) {
     console.error('Error:', error);
@@ -55,15 +33,8 @@ async function selectedRangeSales(startDate, endDate) {
 }
 
 async function orderHistoryInitialLoad(pageNumber, previous, next) {
+  const db = dbconfig.makeDb();
   try {
-    const con = mysql.createConnection(dbconfig);
-    const query = promisify(con.query).bind(con);
-    con.connect((err) => {
-      if (err) {
-        console.error('Error:', err);
-      }
-    });
-
     if (previous && pageNumber > 1) {
       pageNumber -= 1;
     }
@@ -71,12 +42,8 @@ async function orderHistoryInitialLoad(pageNumber, previous, next) {
       pageNumber += 1;
     }
     const offset = (pageNumber - 1) * 2;
-    const orderHistoryResult = await query('SELECT * FROM ORDERS WHERE created > now() - interval 1 month LIMIT 15 OFFSET ? ', [offset]);
-    con.end((err) => {
-      if (err) {
-        console.error('Error:', err);
-      }
-    });
+    const orderHistoryResult = await db.query('SELECT * FROM ORDERS WHERE created > now() - interval 1 month LIMIT 15 OFFSET ? ', [offset]);
+    await db.close();
     return orderHistoryResult;
   } catch (error) {
     console.error('Error:', error);
@@ -84,20 +51,10 @@ async function orderHistoryInitialLoad(pageNumber, previous, next) {
 }
 
 async function selectedRangeOrderHistory(startDate, endDate) {
+  const db = dbconfig.makeDb();
   try {
-    const con = mysql.createConnection(dbconfig);
-    const query = promisify(con.query).bind(con);
-    con.connect((err) => {
-      if (err) {
-        console.error('Error:', err);
-      }
-    });
-    const selectedRangeOrderHistoryResult = await query('SELECT * FROM ORDERS WHERE DATE(created) BETWEEN ? AND ?', [startDate, endDate]);
-    con.end((err) => {
-      if (err) {
-        console.error('Error:', err);
-      }
-    });
+    const selectedRangeOrderHistoryResult = await db.query('SELECT * FROM ORDERS WHERE DATE(created) BETWEEN ? AND ?', [startDate, endDate]);
+    await db.close();
     return selectedRangeOrderHistoryResult;
   } catch (error) {
     console.error('Error:', error);

@@ -1,22 +1,10 @@
-const { promisify } = require('util');
-const mysql = require('mysql2');
 const dbconfig = require('../config/db');
 
 async function isTableOccupied(table, date, time) {
+  const db = dbconfig.makeDb();
   try {
-    const con = mysql.createConnection(dbconfig);
-    con.connect((err) => {
-      if (err) {
-        console.error('Error:', err);
-      }
-    });
-    const query = promisify(con.query).bind(con);
-    const occupiedTableResult = await query('SELECT * FROM reservation WHERE dining_table_id = ? AND date = ? AND time = ?', [table, date, time]);
-    con.end((err) => {
-      if (err) {
-        console.error('Error:', err);
-      }
-    });
+    const occupiedTableResult = await db.query('SELECT * FROM reservation WHERE dining_table_id = ? AND date = ? AND time = ?', [table, date, time]);
+    await db.close();
     return occupiedTableResult.length !== 0;
   } catch (error) {
     console.error('Error:', error);
@@ -24,20 +12,10 @@ async function isTableOccupied(table, date, time) {
 }
 
 async function reserveTable(name, phone, email, date, time, table, guest) {
+  const db = dbconfig.makeDb();
   try {
-    const con = mysql.createConnection(dbconfig);
-    con.connect((err) => {
-      if (err) {
-        console.error('Error:', err);
-      }
-    });
-    const query = promisify(con.query).bind(con);
-    const reserveResult = await query('INSERT INTO reservation (name, phone, email, date, time, dining_table_id, guest_count) VALUES (?, ?, ?, ?, ?, ?, ?)', [name, phone, email, date, time, table, guest]);
-    con.end((err) => {
-      if (err) {
-        console.error('Error:', err);
-      }
-    });
+    const reserveResult = await db.query('INSERT INTO reservation (name, phone, email, date, time, dining_table_id, guest_count) VALUES (?, ?, ?, ?, ?, ?, ?)', [name, phone, email, date, time, table, guest]);
+    await db.close();
     return reserveResult;
   } catch (error) {
     console.error('Error:', error);
@@ -45,20 +23,10 @@ async function reserveTable(name, phone, email, date, time, table, guest) {
 }
 
 async function viewReservation() {
+  const db = dbconfig.makeDb();
   try {
-    const con = mysql.createConnection(dbconfig);
-    con.connect((err) => {
-      if (err) {
-        console.error('Error:', err);
-      }
-    });
-    const query = promisify(con.query).bind(con);
-    const reservationViewResult = await query('SELECT name,phone,email,date,time,dining_table_id,guest_count FROM reservation');
-    con.end((err) => {
-      if (err) {
-        console.error('Error:', err);
-      }
-    });
+    const reservationViewResult = await db.query('SELECT name,phone,email,date,time,dining_table_id,guest_count FROM reservation');
+    await db.close();
     return reservationViewResult;
   } catch (error) {
     console.error('Error:', error);
@@ -66,20 +34,10 @@ async function viewReservation() {
 }
 
 async function cancelReservation(name, phone, date) {
+  const db = dbconfig.makeDb();
   try {
-    const con = mysql.createConnection(dbconfig);
-    con.connect((err) => {
-      if (err) {
-        console.error('Error:', err);
-      }
-    });
-    const query = promisify(con.query).bind(con);
-    await query('DELETE FROM reservation WHERE name = ? AND phone = ? AND date = ?', [name, phone, date]);
-    con.end((err) => {
-      if (err) {
-        console.error('Error:', err);
-      }
-    });
+    await db.query('DELETE FROM reservation WHERE name = ? AND phone = ? AND date = ?', [name, phone, date]);
+    await db.close();
   } catch (error) {
     console.error('Error:', error);
   }

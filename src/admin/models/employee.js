@@ -1,22 +1,10 @@
-const { promisify } = require('util');
-const mysql = require('mysql2');
 const dbconfig = require('../../config/db');
 
 async function viewEmployee(employeeId) {
+  const db = dbconfig.makeDb();
   try {
-    const con = mysql.createConnection(dbconfig);
-    const query = promisify(con.query).bind(con);
-    con.connect((err) => {
-      if (err) {
-        console.error('Error:', err);
-      }
-    });
-    const viewResults = await query('SELECT * FROM employee WHERE id = ?', [employeeId]);
-    con.end((err) => {
-      if (err) {
-        console.error('Error:', err);
-      }
-    });
+    const viewResults = await db.query('SELECT * FROM employee WHERE id = ?', [employeeId]);
+    await db.close();
     return viewResults;
   } catch (error) {
     console.error('Error:', error);
@@ -24,57 +12,31 @@ async function viewEmployee(employeeId) {
 }
 
 async function updateEmployee(firstName, lastName, phone, address, jobId, salary, email, employeeId) {
+  const db = dbconfig.makeDb();
   try {
-    const con = mysql.createConnection(dbconfig);
-    const query = promisify(con.query).bind(con);
-    con.connect((err) => {
-      if (err) {
-        console.error('Error:', err);
-      }
-    });
-    await query(
+    await db.query(
       'UPDATE employee SET first_name = ? ,last_name = ? ,phone = ? ,address = ? ,job_id = ? ,salary = ?, email = ? WHERE id = ?',
       [firstName, lastName, phone, address, jobId, salary, email, employeeId],
     );
-    con.end((err) => {
-      if (err) {
-        console.error('Error:', err);
-      }
-    });
+    await db.close();
   } catch (error) {
     console.error('Error:', error);
   }
 }
 
 async function removeEmployee(employeeId) {
+  const db = dbconfig.makeDb();
   try {
-    const con = mysql.createConnection(dbconfig);
-    const query = promisify(con.query).bind(con);
-    con.connect((err) => {
-      if (err) {
-        console.error('Error:', err);
-      }
-    });
-    await query('DELETE FROM employee WHERE id = ?', [employeeId]);
-    con.end((err) => {
-      if (err) {
-        console.error('Error:', err);
-      }
-    });
+    await db.query('DELETE FROM employee WHERE id = ?', [employeeId]);
+    await db.close();
   } catch (error) {
     console.error('Error:', error);
   }
 }
 
 async function employeePerformance() {
+  const db = dbconfig.makeDb();
   try {
-    const con = mysql.createConnection(dbconfig);
-    const query = promisify(con.query).bind(con);
-    con.connect((err) => {
-      if (err) {
-        console.error('Error:', err);
-      }
-    });
     const ordersQuery = `
     SELECT CONCAT(employee.first_name," ",employee.last_name) AS 'Employee Name', COUNT(employee_id) AS 'Number of orders taken'
     FROM employee
@@ -83,12 +45,8 @@ async function employeePerformance() {
     GROUP BY employee_id
     ORDER BY COUNT(employee_id) DESC;
     `;
-    const ordersResult = await query(ordersQuery);
-    con.end((err) => {
-      if (err) {
-        console.error('Error:', err);
-      }
-    });
+    const ordersResult = await db.query(ordersQuery);
+    await db.close();
     return ordersResult;
   } catch (error) {
     console.error('Error:', error);
