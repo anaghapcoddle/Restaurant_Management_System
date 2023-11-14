@@ -30,8 +30,8 @@ async function createBill(orderId) {
     const billItemsResult = await query(billItemsResultQuery, [orderId]);
 
     const menuItems = billItemsResult.map((row) => ({
-      Item: row.Item,
-      Quantity: row.quantity,
+      item: row.Item,
+      quantity: row.quantity,
     })).filter((item) => item.Item && item.Quantity);
 
     const finalResult = { ...billResult[0], Ordered_Items: menuItems };

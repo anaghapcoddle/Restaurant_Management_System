@@ -1,74 +1,62 @@
 const tableModel = require('../models/table');
 
-let tableType; let capacity; let availability; let tableId; let status;
-// eslint-disable-next-line no-unused-vars
-let success;
-
 async function addTableType(req, res) {
-  tableType = req.body.table_type;
+  const tableType = req.body.table_type;
   try {
     await tableModel.addTableType(tableType);
-    res.send('Table type added successfully');
-    success = true;
+    res.status(201).json({ success: true, message: 'Table type added successfully' });
   } catch (error) {
-    res.status(500).send('Internal Server Error');
-    success = false;
-    throw error;
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+    console.error('Error:', error);
   }
 }
 
 async function disableTableType(req, res) {
-  tableType = req.body.table_type;
-  status = req.body.is_disabled;
   try {
+    const tableType = req.body.table_type;
+    const status = req.body.is_disabled;
     await tableModel.disableTableType(status, tableType);
     if (status === '0') {
-      res.send('Table type enabled successfully');
+      res.status(200).json({ success: true, message: 'Table type enabled successfully' });
     } else {
-      res.send('Table type disabled successfully');
+      res.status(200).json({ success: true, message: 'Table type disabled successfully' });
     }
-    success = true;
   } catch (error) {
-    res.status(500).send('Internal Server Error');
-    success = false;
-    throw error;
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+    console.error('Error:', error);
   }
 }
 
 async function addTable(req, res) {
-  capacity = req.body.capacity;
-  tableType = req.body.table_type;
-  availability = req.body.availability;
   try {
+    const { capacity } = req.body;
+    const tableType = req.body.table_type;
+    const { availability } = req.body;
     await tableModel.addTable(capacity, tableType, availability);
-    res.send('Table added successfully');
-    success = true;
+    res.status(201).json({ success: true, message: 'Table added successfully' });
   } catch (error) {
-    res.status(500).send('Internal Server Error');
-    success = false;
-    throw error;
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+    console.error('Error:', error);
   }
 }
 
 async function disableTable(req, res) {
-  tableId = req.body.table_number;
-  status = req.body.is_disabled;
   try {
+    const tableId = req.body.table_number;
+    const status = req.body.is_disabled;
     if (status === '1') {
       const isTableReserved = await tableModel.isTableReserved(tableId);
       if (isTableReserved) {
-        success = false;
-        return res.status(400).send('Table already reservered for upcoming day. Cannot disable table now.');
+        res.status(400).send({ success: false, message: 'Table already reservered for upcoming day. Cannot disable table now.' });
       }
       await tableModel.disableTable(status, tableId);
-      res.send('Table disabled successfully');
+      res.status(200).json({ success: true, message: 'Table disabled successfully' });
     } else {
-      res.send('Table enabled successfully');
+      res.status(200).json({ success: true, message: 'Table enabled successfully' });
     }
   } catch (error) {
-    res.status(500).send('Internal Server Error');
-    success = false;
-    throw error;
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+    console.error('Error:', error);
   }
 }
 

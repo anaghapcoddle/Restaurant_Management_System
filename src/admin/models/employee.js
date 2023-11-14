@@ -1,4 +1,3 @@
-/* eslint-disable no-useless-catch */
 const { promisify } = require('util');
 const mysql = require('mysql2');
 const dbconfig = require('../../config/db');
@@ -8,15 +7,19 @@ async function viewEmployee(employeeId) {
     const con = mysql.createConnection(dbconfig);
     const query = promisify(con.query).bind(con);
     con.connect((err) => {
-      if (err) throw err;
+      if (err) {
+        console.error('Error:', err);
+      }
     });
     const viewResults = await query('SELECT * FROM employee WHERE id = ?', [employeeId]);
     con.end((err) => {
-      if (err) throw err;
+      if (err) {
+        console.error('Error:', err);
+      }
     });
     return viewResults;
   } catch (error) {
-    throw error;
+    console.error('Error:', error);
   }
 }
 
@@ -25,17 +28,21 @@ async function updateEmployee(firstName, lastName, phone, address, jobId, salary
     const con = mysql.createConnection(dbconfig);
     const query = promisify(con.query).bind(con);
     con.connect((err) => {
-      if (err) throw err;
+      if (err) {
+        console.error('Error:', err);
+      }
     });
     await query(
       'UPDATE employee SET first_name = ? ,last_name = ? ,phone = ? ,address = ? ,job_id = ? ,salary = ?, email = ? WHERE id = ?',
       [firstName, lastName, phone, address, jobId, salary, email, employeeId],
     );
     con.end((err) => {
-      if (err) throw err;
+      if (err) {
+        console.error('Error:', err);
+      }
     });
   } catch (error) {
-    throw error;
+    console.error('Error:', error);
   }
 }
 
@@ -44,14 +51,18 @@ async function removeEmployee(employeeId) {
     const con = mysql.createConnection(dbconfig);
     const query = promisify(con.query).bind(con);
     con.connect((err) => {
-      if (err) throw err;
+      if (err) {
+        console.error('Error:', err);
+      }
     });
     await query('DELETE FROM employee WHERE id = ?', [employeeId]);
     con.end((err) => {
-      if (err) throw err;
+      if (err) {
+        console.error('Error:', err);
+      }
     });
   } catch (error) {
-    throw error;
+    console.error('Error:', error);
   }
 }
 
@@ -60,7 +71,9 @@ async function employeePerformance() {
     const con = mysql.createConnection(dbconfig);
     const query = promisify(con.query).bind(con);
     con.connect((err) => {
-      if (err) throw err;
+      if (err) {
+        console.error('Error:', err);
+      }
     });
     const ordersQuery = `
     SELECT CONCAT(employee.first_name," ",employee.last_name) AS 'Employee Name', COUNT(employee_id) AS 'Number of orders taken'
@@ -72,11 +85,13 @@ async function employeePerformance() {
     `;
     const ordersResult = await query(ordersQuery);
     con.end((err) => {
-      if (err) throw err;
+      if (err) {
+        console.error('Error:', err);
+      }
     });
     return ordersResult;
   } catch (error) {
-    throw error;
+    console.error('Error:', error);
   }
 }
 

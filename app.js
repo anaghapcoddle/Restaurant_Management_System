@@ -1,5 +1,8 @@
 const express = require('express');
 
+const port = 3000;
+const cors = require('cors');
+
 const app = express();
 
 app.use(express.urlencoded({ extended: false }));
@@ -14,16 +17,16 @@ const adminMenuRoutes = require('./src/admin/routes/menu');
 const adminTableRoutes = require('./src/admin/routes/table');
 const adminOrdersRoutes = require('./src/admin/routes/orders');
 
-app.use('/auth', authRoutes);
-app.use('/menu', menuRoutes);
-app.use('/orders', ordersRoutes);
-app.use('/table', tableRoutes);
-app.use('/bill', billRoutes);
-app.use('/admin/employee', adminEmployeeRoutes);
-app.use('/admin/menu', adminMenuRoutes);
-app.use('/admin/table', adminTableRoutes);
-app.use('/admin/orders', adminOrdersRoutes);
+app.use('/auth', cors(), authRoutes);
+app.use('/menu', cors(), menuRoutes);
+app.use('/orders', cors(), ordersRoutes);
+app.use('/table', cors(), tableRoutes);
+app.use('/bill', cors(), billRoutes);
+app.use('/admin/employee', cors(), adminEmployeeRoutes);
+app.use('/admin/menu', cors(), adminMenuRoutes);
+app.use('/admin/table', cors(), adminTableRoutes);
+app.use('/admin/orders', cors(), adminOrdersRoutes);
 
-app.listen(3000, () => {
+app.listen(port, () => {
   console.log('Server is running.');
 });

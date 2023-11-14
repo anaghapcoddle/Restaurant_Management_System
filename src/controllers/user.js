@@ -32,9 +32,9 @@ async function signup(req, res) {
 }
 
 async function login(req, res) {
-  const loginUsername = req.body.username;
-  const loginPassword = req.body.password;
   try {
+    const loginUsername = req.body.username;
+    const loginPassword = req.body.password;
     const result = await userModel.findUser(loginUsername, loginPassword);
     if (result.length === 0) {
       res.status(500).json({ success: false, message: 'Login failed' });

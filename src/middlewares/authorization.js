@@ -4,13 +4,16 @@ function authorizePage(permissions) {
   return (req, res, next) => {
     try {
       const token = req.headers.authorization.split(' ')[1];
-      jwt.verify(token, 'secret', async (err, decoded) => {
+      jwt.verify(token, 'secret', (err, decoded) => {
         const userRole = decoded.role;
-        // console.log(userRole);
+        if (err) {
+          res.status(500).json({ success: false, message: 'Authentication failed' });
+          console.error('Error:', err);
+        }
         if (permissions.includes(userRole)) {
           next();
         } else {
-          return res.status(401).json('You do not have permissions');
+          res.status(401).json({ success: false, message: 'You do not have permissions' });
         }
       });
     } catch (error) {

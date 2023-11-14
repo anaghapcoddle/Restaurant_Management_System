@@ -1,4 +1,3 @@
-/* eslint-disable no-useless-catch */
 const { promisify } = require('util');
 const mysql = require('mysql2');
 const dbconfig = require('../config/db');

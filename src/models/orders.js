@@ -1,10 +1,6 @@
-/* eslint-disable no-await-in-loop */
 const { promisify } = require('util');
 const mysql = require('mysql2');
 const dbconfig = require('../config/db');
-
-let totalPrice; let quantityOrdered; let currentItemAmount; let totalQuantity; let priceToBeAdded;
-let newItemTotalPrice; let itemTotalPrice; let priceToBeReduced;
 
 async function fetch() {
   try {
@@ -46,7 +42,7 @@ async function add(employeeId, diningTableId, type, status, deliveryStatus, item
     for (const item of items) {
       const result = await query('SELECT price FROM menu WHERE id = ?', [item.name]);
       const { price } = result[0];
-      itemTotalPrice = price * item.quantity;
+      const itemTotalPrice = price * item.quantity;
       totalOrderPrice += itemTotalPrice;
       await query('INSERT INTO order_items (order_id, menu_id, quantity, amount) VALUES (?, ?, ?, ?)', [orderId, item.name, item.quantity, itemTotalPrice]);
     }
@@ -57,7 +53,7 @@ async function add(employeeId, diningTableId, type, status, deliveryStatus, item
       }
     });
   } catch (error) {
-    console.error('Error:',error);
+    console.error('Error:', error);
   }
 }
 
@@ -71,7 +67,7 @@ async function update(orderId, updateItems) {
     });
     const query = promisify(con.query).bind(con);
     const totalPriceResult = await query('SELECT total_amount FROM orders WHERE id = ?', [orderId]);
-    totalPrice = parseInt(totalPriceResult[0].total_amount, 10);
+    let totalPrice = parseInt(totalPriceResult[0].total_amount, 10);
     // eslint-disable-next-line no-restricted-syntax
     for (const item of updateItems) {
       const result = await query('SELECT price FROM menu WHERE id = ?', [item.name]);
@@ -79,15 +75,15 @@ async function update(orderId, updateItems) {
       const itemExistResult = await query('SELECT * FROM order_items WHERE order_id = ? AND menu_id = ?', [orderId, item.name]);
       if (itemExistResult.length !== 0) {
         const quantityResult = await query('SELECT quantity,amount FROM order_items WHERE order_id = ? AND menu_id = ?', [orderId, item.name]);
-        quantityOrdered = parseInt(quantityResult[0].quantity, 10);
-        currentItemAmount = parseInt(quantityResult[0].amount, 10);
-        totalQuantity = quantityOrdered + item.quantity;
-        priceToBeAdded = price * item.quantity;
-        newItemTotalPrice = currentItemAmount + priceToBeAdded;
+        const quantityOrdered = parseInt(quantityResult[0].quantity, 10);
+        const currentItemAmount = parseInt(quantityResult[0].amount, 10);
+        const totalQuantity = quantityOrdered + item.quantity;
+        const priceToBeAdded = price * item.quantity;
+        const newItemTotalPrice = currentItemAmount + priceToBeAdded;
         await query('UPDATE order_items SET quantity = ?, amount = ? WHERE order_id = ? AND menu_id = ?', [totalQuantity, newItemTotalPrice, orderId, item.name]);
         totalPrice += priceToBeAdded;
       } else {
-        itemTotalPrice = price * item.quantity;
+        const itemTotalPrice = price * item.quantity;
         totalPrice += itemTotalPrice;
         await query('INSERT INTO order_items (order_id, menu_id, quantity, amount) VALUES (?, ?, ?, ?)', [orderId, item.name, item.quantity, itemTotalPrice]);
       }
@@ -124,7 +120,7 @@ async function isItemExisting(orderId, removeItems) {
     });
     return itemExistResult.length === 0;
   } catch (error) {
-    throw error;
+    console.error('Error:', error);
   }
 }
 
@@ -138,18 +134,18 @@ async function remove(orderId, removeItems) {
     });
     const query = promisify(con.query).bind(con);
     const totalPriceResult = await query('SELECT total_amount FROM orders WHERE id = ?', [orderId]);
-    totalPrice = parseInt(totalPriceResult[0].total_amount, 10);
+    let totalPrice = parseInt(totalPriceResult[0].total_amount, 10);
     // eslint-disable-next-line no-restricted-syntax
     for (const item of removeItems) {
       const result = await query('SELECT price FROM menu WHERE id = ?', [item.name]);
       const { price } = result[0];
 
       const quantityResult = await query('SELECT quantity,amount FROM order_items WHERE order_id = ? AND menu_id = ?', [orderId, item.name]);
-      quantityOrdered = parseInt(quantityResult[0].quantity, 10);
-      currentItemAmount = parseInt(quantityResult[0].amount, 10);
-      totalQuantity = quantityOrdered - item.quantity;
-      priceToBeReduced = price * item.quantity;
-      newItemTotalPrice = currentItemAmount - priceToBeReduced;
+      const quantityOrdered = parseInt(quantityResult[0].quantity, 10);
+      const currentItemAmount = parseInt(quantityResult[0].amount, 10);
+      const totalQuantity = quantityOrdered - item.quantity;
+      const priceToBeReduced = price * item.quantity;
+      const newItemTotalPrice = currentItemAmount - priceToBeReduced;
       await query('UPDATE order_items SET quantity = ?, amount = ? WHERE order_id = ? AND menu_id = ?', [totalQuantity, newItemTotalPrice, orderId, item.name]);
       totalPrice -= priceToBeReduced;
     }
@@ -160,7 +156,7 @@ async function remove(orderId, removeItems) {
       }
     });
   } catch (error) {
-    throw error;
+    console.error('Error:', error);
   }
 }
 

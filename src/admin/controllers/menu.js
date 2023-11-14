@@ -1,76 +1,63 @@
 const menuModel = require('../models/menu');
 
-let categoryName; let categoryId; let price; let availability;
-let newPrice; let itemName;
-// eslint-disable-next-line no-unused-vars
-let success;
-
 async function addCategory(req, res) {
-  categoryName = req.body.category_name;
   try {
+    const categoryName = req.body.category_name;
     await menuModel.addCategory(categoryName);
-    res.send('Category added successfully');
-    success = true;
+    res.status(201).json({ success: true, message: 'Category added successfully' });
   } catch (error) {
-    res.status(500).send('Internal Server Error');
-    success = false;
-    throw error;
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+    console.error('Error:', error);
   }
 }
 
 async function removeCategory(req, res) {
-  categoryName = req.body.category_name;
   try {
+    const categoryName = req.body.category_name;
     await menuModel.removeCategory(categoryName);
-    res.send('Category removed successfully');
-    success = true;
+    res.status(204).json({ success: true, message: 'Category removed successfully' });
   } catch (error) {
-    res.status(500).send('Internal Server Error');
-    success = false;
-    throw error;
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+    console.error('Error:', error);
   }
 }
 
 async function addMenuItem(req, res) {
-  itemName = req.body.item_name;
-  categoryId = req.body.category_id;
-  price = req.body.price;
-  availability = req.body.availability;
   try {
+    const itemName = req.body.item_name;
+    const categoryId = req.body.category_id;
+    const { price } = req.body;
+    const { availability } = req.body;
     await menuModel.addMenuItem(itemName, categoryId, price, availability);
-    res.send('Menu item added successfully');
-    success = true;
+    res.status(201).json({ success: true, message: 'Menu item added successfully' });
   } catch (error) {
-    res.status(500).send('Internal Server Error');
-    success = false;
-    throw error;
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+    console.error('Error:', error);
   }
 }
 
 async function changeItemPrice(req, res) {
-  itemName = req.body.item_name;
-  newPrice = req.body.new_price;
   try {
+    const itemName = req.body.item_name;
+    const newPrice = req.body.new_price;
     await menuModel.changeItemPrice(itemName, newPrice);
-    res.send('Item price changed successfully');
-    success = true;
+    res.status(200).json({ success: true, message: 'Item price changed successfully' });
   } catch (error) {
-    res.status(500).send('Internal Server Error');
-    success = false;
-    throw error;
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+    console.error('Error:', error);
   }
 }
 
 async function removeMenuItem(req, res) {
-  itemName = req.body.item_name;
+  const itemName = req.body.item_name;
   try {
     await menuModel.removeMenuItem(itemName);
-    res.send('Menu item removed successfully');
-    success = true;
+    // res.send('Menu item removed successfully');
+    // success = true;
+    res.status(204).json({ success: true, message: 'Item price changed successfully' });
   } catch (error) {
-    res.status(500).send('Internal Server Error');
-    success = false;
-    throw error;
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+    console.error('Error:', error);
   }
 }
 
