@@ -10,7 +10,7 @@ function verifyToken(req, res, next) {
     jwt.verify(token, 'secret', (err) => {
       if (err) {
         if (err.name === 'TokenExpiredError') {
-          res.json({ success: false, message: 'Request Timeout Please Re login' });
+          res.json({ success: false, message: 'Request Timeout. Please Re login' });
         } else {
           res.status(500).json({ success: false, message: 'Authentication failed' });
           console.error('Error:', err);

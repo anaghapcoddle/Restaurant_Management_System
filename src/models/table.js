@@ -2,35 +2,38 @@ const dbconfig = require('../config/db');
 
 async function isTableOccupied(table, date, time) {
   const db = dbconfig.makeDb();
+  let occupiedTableResult;
   try {
-    const occupiedTableResult = await db.query('SELECT * FROM reservation WHERE dining_table_id = ? AND date = ? AND time = ?', [table, date, time]);
+    occupiedTableResult = await db.query('SELECT * FROM reservation WHERE dining_table_id = ? AND date = ? AND time = ?', [table, date, time]);
     await db.close();
-    return occupiedTableResult.length !== 0;
   } catch (error) {
     console.error('Error:', error);
   }
+  return occupiedTableResult.length !== 0;
 }
 
 async function reserveTable(name, phone, email, date, time, table, guest) {
   const db = dbconfig.makeDb();
+  let reserveResult;
   try {
-    const reserveResult = await db.query('INSERT INTO reservation (name, phone, email, date, time, dining_table_id, guest_count) VALUES (?, ?, ?, ?, ?, ?, ?)', [name, phone, email, date, time, table, guest]);
+    reserveResult = await db.query('INSERT INTO reservation (name, phone, email, date, time, dining_table_id, guest_count) VALUES (?, ?, ?, ?, ?, ?, ?)', [name, phone, email, date, time, table, guest]);
     await db.close();
-    return reserveResult;
   } catch (error) {
     console.error('Error:', error);
   }
+  return reserveResult;
 }
 
 async function viewReservation() {
   const db = dbconfig.makeDb();
+  let reservationViewResult;
   try {
-    const reservationViewResult = await db.query('SELECT name,phone,email,date,time,dining_table_id,guest_count FROM reservation');
+    reservationViewResult = await db.query('SELECT name,phone,email,date,time,dining_table_id,guest_count FROM reservation');
     await db.close();
-    return reservationViewResult;
   } catch (error) {
     console.error('Error:', error);
   }
+  return reservationViewResult;
 }
 
 async function cancelReservation(name, phone, date) {

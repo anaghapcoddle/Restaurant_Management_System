@@ -2,13 +2,14 @@ const dbconfig = require('../config/db');
 
 async function fetch() {
   const db = dbconfig.makeDb();
+  let results;
   try {
-    const results = await db.query('SELECT * FROM orders');
+    results = await db.query('SELECT * FROM orders');
     await db.close();
-    return results;
   } catch (error) {
     console.error('Error:', error);
   }
+  return results;
 }
 
 async function add(employeeId, diningTableId, type, status, deliveryStatus, items) {
@@ -69,8 +70,8 @@ async function update(orderId, updateItems) {
 
 async function isItemExisting(orderId, removeItems) {
   const db = dbconfig.makeDb();
+  let itemExistResult;
   try {
-    let itemExistResult;
     // eslint-disable-next-line no-restricted-syntax
     for (const item of removeItems) {
       itemExistResult = await db.query('SELECT * FROM order_items WHERE order_id = ? AND menu_id = ? AND quantity > 0', [orderId, item.name, quantityOrdered]);
@@ -80,6 +81,7 @@ async function isItemExisting(orderId, removeItems) {
   } catch (error) {
     console.error('Error:', error);
   }
+  return itemExistResult.length === 0;
 }
 
 async function remove(orderId, removeItems) {

@@ -11,6 +11,22 @@ async function reserveTable(req, res) {
     const { time } = req.body;
     const { table } = req.body;
     const { guest } = req.body;
+    if (!name || !phone || !email || !date || !time || !table || !guest) {
+      return res.status(400).json({
+        success: false,
+        message: 'All fields are required',
+      });
+    }
+
+    const phoneno = /^\d{10}$/;
+    if (!phone.match(phoneno)) {
+      return res.status(400).json({ success: false, error: 'Not a valid number or does not contain 10 digits' });
+    }
+
+    if (phone.toString().length !== 10) {
+      return res.status(400).json({ success: false, error: 'Number must contain 10 digits' });
+    }
+
     const isTableOccupied = await tableModel.isTableOccupied(table, date, time);
     if (isTableOccupied) {
       res.status(400).json({
@@ -20,7 +36,7 @@ async function reserveTable(req, res) {
     }
     await tableModel.reserveTable(name, phone, email, date, time, table, guest);
     res.status(201).json({
-      success: false,
+      success: true,
       message: 'Data inserted successfully',
     });
   } catch (error) {

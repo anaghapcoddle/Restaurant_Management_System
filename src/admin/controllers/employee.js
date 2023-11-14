@@ -24,7 +24,16 @@ async function updateEmployee(req, res) {
     const jobId = req.body.job_id;
     const { salary } = req.body;
     const { email } = req.body;
-    await employeeModel.updateEmployee(firstName, lastName, phone, address, jobId, salary, email, employeeId);
+    await employeeModel.updateEmployee(
+      firstName,
+      lastName,
+      phone,
+      address,
+      jobId,
+      salary,
+      email,
+      employeeId,
+    );
     res.status(200).json({ success: true, message: 'Employee data updated successfully' });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Internal Server Error' });

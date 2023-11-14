@@ -52,9 +52,7 @@ async function removeMenuItem(req, res) {
   const itemName = req.body.item_name;
   try {
     await menuModel.removeMenuItem(itemName);
-    // res.send('Menu item removed successfully');
-    // success = true;
-    res.status(204).json({ success: true, message: 'Item price changed successfully' });
+    res.status(204).json({ success: true, message: 'Menu item removed successfully' });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Internal Server Error' });
     console.error('Error:', error);

@@ -7,7 +7,7 @@ async function signup(req, res) {
     const signupEmail = req.body.email;
     const signupPassword = req.body.password;
     if (!signupUsername || !signupEmail || !signupPassword) {
-      res.status(400).json({
+      return res.status(400).json({
         success: false,
         message: 'All fields are required',
       });
@@ -15,7 +15,7 @@ async function signup(req, res) {
 
     const isUserNameExisting = await userModel.findUser(signupUsername, signupPassword);
     if (isUserNameExisting.length !== 0) {
-      res.status(400).json({
+      return res.status(400).json({
         success: false,
         message: 'Username is already in use',
       });

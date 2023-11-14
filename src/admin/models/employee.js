@@ -2,16 +2,26 @@ const dbconfig = require('../../config/db');
 
 async function viewEmployee(employeeId) {
   const db = dbconfig.makeDb();
+  let viewResults;
   try {
-    const viewResults = await db.query('SELECT * FROM employee WHERE id = ?', [employeeId]);
+    viewResults = await db.query('SELECT * FROM employee WHERE id = ?', [employeeId]);
     await db.close();
-    return viewResults;
   } catch (error) {
     console.error('Error:', error);
   }
+  return viewResults;
 }
 
-async function updateEmployee(firstName, lastName, phone, address, jobId, salary, email, employeeId) {
+async function updateEmployee(
+  firstName,
+  lastName,
+  phone,
+  address,
+  jobId,
+  salary,
+  email,
+  employeeId,
+) {
   const db = dbconfig.makeDb();
   try {
     await db.query(
@@ -36,6 +46,7 @@ async function removeEmployee(employeeId) {
 
 async function employeePerformance() {
   const db = dbconfig.makeDb();
+  let ordersResult;
   try {
     const ordersQuery = `
     SELECT CONCAT(employee.first_name," ",employee.last_name) AS 'Employee Name', COUNT(employee_id) AS 'Number of orders taken'
@@ -45,12 +56,12 @@ async function employeePerformance() {
     GROUP BY employee_id
     ORDER BY COUNT(employee_id) DESC;
     `;
-    const ordersResult = await db.query(ordersQuery);
+    ordersResult = await db.query(ordersQuery);
     await db.close();
-    return ordersResult;
   } catch (error) {
     console.error('Error:', error);
   }
+  return ordersResult;
 }
 
 module.exports = {

@@ -2,6 +2,7 @@ const dbconfig = require('../config/db');
 
 async function createBill(orderId) {
   const db = dbconfig.makeDb();
+  let finalResult;
   try {
     const billResultQuery = `
     SELECT created AS Date, type AS Order_Type, employee_id AS Staff,
@@ -26,13 +27,13 @@ async function createBill(orderId) {
       quantity: row.quantity,
     })).filter((item) => item.Item && item.Quantity);
 
-    const finalResult = { ...billResult[0], Ordered_Items: menuItems };
+    finalResult = { ...billResult[0], Ordered_Items: menuItems };
 
     await db.close();
-    return finalResult;
   } catch (error) {
     console.error('Error:', error);
   }
+  return finalResult;
 }
 
 module.exports = {
