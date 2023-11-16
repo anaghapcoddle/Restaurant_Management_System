@@ -5,7 +5,7 @@ const authorizeMiddleware = require('../middlewares/authorization');
 
 const router = express.Router();
 
-router.get('/fetch', authMiddleware.verifyToken, authorizeMiddleware.authorizePage(['admin', 'user']), ordersController.fetch);
+router.get('/view', authMiddleware.verifyToken, authorizeMiddleware.authorizePage(['admin', 'user']), ordersController.view);
 router.post('/add', authMiddleware.verifyToken, authorizeMiddleware.authorizePage(['admin', 'user']), ordersController.add);
 router.put('/update', authMiddleware.verifyToken, authorizeMiddleware.authorizePage(['admin', 'user']), ordersController.update);
 router.delete('/remove', authMiddleware.verifyToken, authorizeMiddleware.authorizePage(['admin', 'user']), ordersController.remove);

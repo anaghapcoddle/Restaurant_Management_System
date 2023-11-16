@@ -49,7 +49,7 @@ async function employeePerformance() {
   let ordersResult;
   try {
     const ordersQuery = `
-    SELECT CONCAT(employee.first_name," ",employee.last_name) AS 'Employee Name', COUNT(employee_id) AS 'Number of orders taken'
+    SELECT CONCAT(employee.first_name," ",employee.last_name) AS 'Employee Name', COUNT(employee_id) AS 'numberOfOrdersTaken'
     FROM employee
     INNER JOIN orders ON employee.id=orders.employee_id
     WHERE orders.created>now() - interval 1 month

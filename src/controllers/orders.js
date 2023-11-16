@@ -1,8 +1,8 @@
 const ordersModel = require('../models/orders');
 
-async function fetch(req, res) {
+async function view(req, res) {
   try {
-    const results = await ordersModel.fetch();
+    const results = await ordersModel.view();
     res.status(200).json({
       success: true,
       data: results,
@@ -15,21 +15,29 @@ async function fetch(req, res) {
 
 async function add(req, res) {
   try {
-    const employeeId = req.body.employee_id;
-    const diningTableId = req.body.dining_table_id;
+    const { employeeId } = req.body;
+    const { diningTableId } = req.body;
     const { type } = req.body;
     const { status } = req.body;
-    const deliveryStatus = req.body.delivery_status;
-    const items = [];
-
-    for (let i = 0; req.body[`item${i}_name`]; i += 1) {
-      const item = {
-        name: req.body[`item${i}_name`],
-        quantity: parseFloat(req.body[`item${i}_quantity`]),
-      };
-      items.push(item);
+    const { deliveryStatus } = req.body;
+    const { items } = req.body;
+    let totalOrderPrice = 0;
+    for (let i = 0; i < items.length; i += 1) {
+      const obj = items[i];
+      const itemTotalPrice = await ordersModel.calculatePrice(obj);
+      totalOrderPrice += itemTotalPrice;
     }
-    await ordersModel.add(employeeId, diningTableId, type, status, deliveryStatus, items);
+    const orderId = await ordersModel.addOrder(
+      employeeId,
+      diningTableId,
+      totalOrderPrice,
+      type,
+      status,
+      deliveryStatus,
+    );
+    items.forEach(async (obj) => {
+      await ordersModel.addOrderItems(orderId, obj.id, obj.quantity);
+    });
     res.status(201).json({
       success: true,
       message: 'Data inserted successfully',
@@ -42,16 +50,19 @@ async function add(req, res) {
 
 async function update(req, res) {
   try {
-    const orderNumber = req.body.order_number;
-    const updateItems = [];
-    for (let i = 0; req.body[`item${i}_name`]; i += 1) {
-      const item = {
-        name: req.body[`item${i}_name`],
-        quantity: parseFloat(req.body[`item${i}_quantity`]),
-      };
-      updateItems.push(item);
+    const { orderNumber } = req.body;
+    const updateItems = req.body.items;
+    let totalOrderPrice = await ordersModel.findCurrentTotalPrice(orderNumber);
+    for (let i = 0; i < updateItems.length; i += 1) {
+      const obj = updateItems[i];
+      const itemTotalPrice = await ordersModel.calculatePrice(obj);
+      totalOrderPrice += itemTotalPrice;
     }
-    await ordersModel.update(orderNumber, updateItems);
+    console.log(totalOrderPrice);
+    await ordersModel.updateTotalPrice(totalOrderPrice, orderNumber);
+    updateItems.forEach(async (obj) => {
+      await ordersModel.updateOrder(orderNumber, obj.id, obj.quantity);
+    });
     res.status(200).json({
       success: true,
       message: 'Data updated successfully',
@@ -64,25 +75,21 @@ async function update(req, res) {
 
 async function remove(req, res) {
   try {
-    const orderNumber = req.body.order_number;
-    const removeItems = [];
-    for (let i = 0; req.body[`item${i}_name`]; i += 1) {
-      const item = {
-        name: req.body[`item${i}_name`],
-        quantity: parseFloat(req.body[`item${i}_quantity`]),
-      };
-      removeItems.push(item);
+    const { orderNumber } = req.body;
+    const removeItems = req.body.items;
+    let totalOrderPrice = await ordersModel.findCurrentTotalPrice(orderNumber);
+    for (let i = 0; i < removeItems.length; i += 1) {
+      const obj = removeItems[i];
+      const itemTotalPrice = await ordersModel.calculatePrice(obj);
+      totalOrderPrice -= itemTotalPrice;
     }
-    const isItemExisting = await ordersModel.isItemExisting(orderNumber, removeItems);
-    if (isItemExisting) {
-      res.status(400).json({
-        success: false,
-        message: 'Contains items which are not ordered or more number than ordered',
-      });
-    }
-    await ordersModel.remove(orderNumber, removeItems);
+    console.log(totalOrderPrice);
+    await ordersModel.updateTotalPrice(totalOrderPrice, orderNumber);
+    removeItems.forEach(async (obj) => {
+      await ordersModel.remove(orderNumber, obj.id, obj.quantity);
+    });
     res.status(200).json({
-      success: false,
+      success: true,
       message: 'Data removed successfully',
     });
   } catch (error) {
@@ -92,7 +99,7 @@ async function remove(req, res) {
 }
 
 module.exports = {
-  fetch,
+  view,
   add,
   update,
   remove,

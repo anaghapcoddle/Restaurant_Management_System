@@ -2,7 +2,7 @@ const billModel = require('../models/bill');
 
 async function createBill(req, res) {
   try {
-    const orderId = req.body.order_id;
+    const { orderId } = req.body;
     const results = await billModel.createBill(orderId);
     res.status(200).json({
       success: true,

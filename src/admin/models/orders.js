@@ -4,7 +4,7 @@ async function monthlySales() {
   const db = dbconfig.makeDb();
   try {
     const monthlySalesQuery = `
-    SELECT COUNT(id) AS 'Total number of orders', SUM(total_amount) AS 'Net Sales'
+    SELECT COUNT(id) AS 'Total number of orders', SUM(total_amount) AS 'netSales'
     FROM orders
     WHERE created>now() - interval 1 month;
       `;
@@ -20,7 +20,7 @@ async function selectedRangeSales(startDate, endDate) {
   const db = dbconfig.makeDb();
   try {
     const selectedRangeSalesQuery = `
-    SELECT COUNT(id) AS 'Total number of orders', SUM(total_amount) AS 'Net Sales'
+    SELECT COUNT(id) AS 'Total number of orders', SUM(total_amount) AS 'netSales'
     FROM orders
     WHERE DATE(created) BETWEEN ? AND ?;
       `;

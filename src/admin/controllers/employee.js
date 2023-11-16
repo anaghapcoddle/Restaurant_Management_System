@@ -16,12 +16,12 @@ async function viewEmployee(req, res) {
 
 async function updateEmployee(req, res) {
   try {
-    const employeeId = req.body.employee_id;
-    const firstName = req.body.first_name;
-    const lastName = req.body.last_name;
+    const { employeeId } = req.body;
+    const { firstName } = req.body;
+    const { lastName } = req.body;
     const { phone } = req.body;
     const { address } = req.body;
-    const jobId = req.body.job_id;
+    const { jobId } = req.body;
     const { salary } = req.body;
     const { email } = req.body;
     await employeeModel.updateEmployee(
@@ -43,7 +43,7 @@ async function updateEmployee(req, res) {
 
 async function removeEmployee(req, res) {
   try {
-    const employeeId = req.body.employee_id;
+    const { employeeId } = req.body;
     await employeeModel.removeEmployee(employeeId);
     res.status(204).json({ success: true, message: 'Employee data removed successfully' });
   } catch (error) {

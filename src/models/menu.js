@@ -1,6 +1,6 @@
 const dbconfig = require('../config/db');
 
-async function fetch() {
+async function view() {
   const db = dbconfig.makeDb();
   let results;
   try {
@@ -25,6 +25,6 @@ async function updateAvailability(item, status) {
 }
 
 module.exports = {
-  fetch,
+  view,
   updateAvailability,
 };

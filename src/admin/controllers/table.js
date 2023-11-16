@@ -13,8 +13,8 @@ async function addTableType(req, res) {
 
 async function disableTableType(req, res) {
   try {
-    const tableType = req.body.table_type;
-    const status = req.body.is_disabled;
+    const { tableType } = req.body;
+    const status = req.body.isDisabled;
     await tableModel.disableTableType(status, tableType);
     if (status === '0') {
       res.status(200).json({ success: true, message: 'Table type enabled successfully' });
@@ -30,7 +30,7 @@ async function disableTableType(req, res) {
 async function addTable(req, res) {
   try {
     const { capacity } = req.body;
-    const tableType = req.body.table_type;
+    const { tableType } = req.body;
     const { availability } = req.body;
     await tableModel.addTable(capacity, tableType, availability);
     res.status(201).json({ success: true, message: 'Table added successfully' });
@@ -42,8 +42,8 @@ async function addTable(req, res) {
 
 async function disableTable(req, res) {
   try {
-    const tableId = req.body.table_number;
-    const status = req.body.is_disabled;
+    const tableId = req.body.tableNumber;
+    const status = req.body.isDisabled;
     if (status === '1') {
       const isTableReserved = await tableModel.isTableReserved(tableId);
       if (isTableReserved) {

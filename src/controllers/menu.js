@@ -1,8 +1,8 @@
 const menuModel = require('../models/menu');
 
-async function fetch(req, res) {
+async function view(req, res) {
   try {
-    const results = await menuModel.fetch();
+    const results = await menuModel.view();
     res.status(200).json({
       success: true,
       data: results,
@@ -16,7 +16,7 @@ async function fetch(req, res) {
 async function updateAvailability(req, res) {
   try {
     const { item } = req.body;
-    const status = req.body.availabity_status;
+    const status = req.body.availabityStatus;
     await menuModel.updateAvailability(item, status);
     res.status(500).json({
       success: true,
@@ -29,6 +29,6 @@ async function updateAvailability(req, res) {
 }
 
 module.exports = {
-  fetch,
+  view,
   updateAvailability,
 };
