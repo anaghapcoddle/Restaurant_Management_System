@@ -6,7 +6,7 @@ const authorizeMiddleware = require('../../middlewares/authorization');
 const router = express.Router();
 
 router.post('/addCategory', authMiddleware.verifyToken, authorizeMiddleware.authorizePage('admin'), menuController.addCategory);
-router.delete('/removeCategory', authMiddleware.verifyToken, authorizeMiddleware.authorizePage('admin'), menuController.removeCategory);
+router.patch('/disableCategory', authMiddleware.verifyToken, authorizeMiddleware.authorizePage('admin'), menuController.disableCategory);
 
 router.post('/addItem', authMiddleware.verifyToken, authorizeMiddleware.authorizePage('admin'), menuController.addMenuItem);
 router.put('/changePrice', authMiddleware.verifyToken, authorizeMiddleware.authorizePage('admin'), menuController.changeItemPrice);

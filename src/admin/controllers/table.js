@@ -17,13 +17,12 @@ async function disableTableType(req, res) {
     const status = req.body.isDisabled;
     await tableModel.disableTableType(status, tableType);
     if (status === '0') {
-      res.status(200).json({ success: true, message: 'Table type enabled successfully' });
-    } else {
-      res.status(200).json({ success: true, message: 'Table type disabled successfully' });
+      return res.status(200).json({ success: true, message: 'Table type enabled successfully' });
     }
+    return res.status(200).json({ success: true, message: 'Table type disabled successfully' });
   } catch (error) {
-    res.status(500).json({ success: false, message: 'Internal Server Error' });
     console.error('Error:', error);
+    return res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 }
 
@@ -44,19 +43,18 @@ async function disableTable(req, res) {
   try {
     const tableId = req.body.tableNumber;
     const status = req.body.isDisabled;
-    if (status === '1') {
+    if (status === '0') {
       const isTableReserved = await tableModel.isTableReserved(tableId);
       if (isTableReserved) {
-        res.status(400).send({ success: false, message: 'Table already reservered for upcoming day. Cannot disable table now.' });
+        return res.status(400).send({ success: false, message: 'Table already reservered for upcoming day. Cannot disable table now.' });
       }
       await tableModel.disableTable(status, tableId);
-      res.status(200).json({ success: true, message: 'Table disabled successfully' });
-    } else {
-      res.status(200).json({ success: true, message: 'Table enabled successfully' });
+      return res.status(200).json({ success: true, message: 'Table disabled successfully' });
     }
+    return res.status(200).json({ success: true, message: 'Table enabled successfully' });
   } catch (error) {
-    res.status(500).json({ success: false, message: 'Internal Server Error' });
     console.error('Error:', error);
+    return res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 }
 

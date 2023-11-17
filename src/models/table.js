@@ -1,10 +1,11 @@
 const dbconfig = require('../config/db');
 
-async function isTableOccupied(table, date, time) {
+async function isTableOccupied(table, date) {
   const db = dbconfig.makeDb();
   let occupiedTableResult;
   try {
-    occupiedTableResult = await db.query('SELECT * FROM reservation WHERE dining_table_id = ? AND date = ? AND time = ?', [table, date, time]);
+    occupiedTableResult = await db.query('SELECT * FROM reservation WHERE dining_table_id = ? AND date = ? AND status = "0"', [table, date]);
+    // console.log(occupiedTableResult);
     await db.close();
   } catch (error) {
     console.error('Error:', error);
@@ -36,10 +37,20 @@ async function viewReservation() {
   return reservationViewResult;
 }
 
-async function cancelReservation(name, phone, date) {
+async function cancelReservation(name, phone, date, table) {
   const db = dbconfig.makeDb();
   try {
-    await db.query('DELETE FROM reservation WHERE name = ? AND phone = ? AND date = ?', [name, phone, date]);
+    await db.query('DELETE FROM reservation WHERE name = ? AND phone = ? AND date = ? AND dining_table_id = ?', [name, phone, date, table]);
+    await db.close();
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
+async function updateReservationStatus(status, name, phone, date, table) {
+  const db = dbconfig.makeDb();
+  try {
+    await db.query('UPDATE reservation SET status = ? WHERE name = ? AND phone = ? AND date = ? AND dining_table_id = ?', [status, name, phone, date, table]);
     await db.close();
   } catch (error) {
     console.error('Error:', error);
@@ -51,4 +62,5 @@ module.exports = {
   isTableOccupied,
   viewReservation,
   cancelReservation,
+  updateReservationStatus,
 };

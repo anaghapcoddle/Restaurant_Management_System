@@ -32,13 +32,14 @@ async function addTable(capacity, tableTypeId, availability) {
 
 async function isTableReserved(tableId) {
   const db = dbconfig.makeDb();
+  let reservedTableResult;
   try {
-    const reservedTableResult = await db.query('SELECT * FROM reservation WHERE dining_table_id = ? AND CONCAT(date," ",time) >= CURRENT_TIMESTAMP()', [tableId]);
+    reservedTableResult = await db.query('SELECT * FROM reservation WHERE dining_table_id = ? AND CONCAT(date," ",time) >= CURRENT_TIMESTAMP()', [tableId]);
     await db.close();
-    return reservedTableResult.length !== 0;
   } catch (error) {
     console.error('Error:', error);
   }
+  return reservedTableResult.length !== 0;
 }
 
 async function disableTable(status, tableId) {

@@ -21,13 +21,13 @@ async function signup(req, res) {
       });
     }
     const signupResult = await userModel.addUser(signupUsername, signupEmail, signupPassword);
-    res.status(201).json({
+    return res.status(201).json({
       success: true,
       message: `User account created successfully. Employee id is : ${signupResult}`,
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: 'Internal Server Error' });
     console.error('Error:', error);
+    return res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 }
 
@@ -37,19 +37,18 @@ async function login(req, res) {
     const loginPassword = req.body.password;
     const result = await userModel.findUser(loginUsername, loginPassword);
     if (result.length === 0) {
-      res.status(500).json({ success: false, message: 'Login failed' });
-    } else {
-      const resp = {
-        id: result[0].id,
-        first_name: result[0].first_name,
-        role: result[0].role,
-      };
-      const token = jwt.sign(resp, 'secret', { expiresIn: 604800 });
-      res.status(200).send({ auth: true, success: true, token });
+      return res.status(500).json({ success: false, message: 'Login failed' });
     }
+    const resp = {
+      id: result[0].id,
+      first_name: result[0].first_name,
+      role: result[0].role,
+    };
+    const token = jwt.sign(resp, 'secret', { expiresIn: 604800 });
+    return res.status(200).send({ auth: true, success: true, token });
   } catch (error) {
-    res.status(500).send({ success: false, message: 'Login failed' });
     console.error('Error:', error);
+    return res.status(500).send({ success: false, message: 'Login failed' });
   }
 }
 

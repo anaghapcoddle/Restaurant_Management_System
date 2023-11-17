@@ -11,14 +11,19 @@ async function addCategory(req, res) {
   }
 }
 
-async function removeCategory(req, res) {
+async function disableCategory(req, res) {
   try {
-    const { categoryName } = req.body;
-    await menuModel.removeCategory(categoryName);
-    res.status(204).json({ success: true, message: 'Category removed successfully' });
+    const { categoryId } = req.body;
+    const { availability } = req.body;
+    await menuModel.removeCategory(availability, categoryId);
+    await menuModel.updateMenuItemsAvailability(categoryId, availability);
+    if (availability === '0') {
+      return res.status(200).json({ success: true, message: 'Category disabled successfully. Menu items made unavailable.' });
+    }
+    return res.status(200).json({ success: true, message: 'Category enabled successfully. Menu items made available.' });
   } catch (error) {
-    res.status(500).json({ success: false, message: 'Internal Server Error' });
     console.error('Error:', error);
+    return res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 }
 
@@ -51,8 +56,8 @@ async function changeItemPrice(req, res) {
 async function removeMenuItem(req, res) {
   const { itemName } = req.body;
   try {
-    await menuModel.removeMenuItem(itemName);
-    res.status(204).json({ success: true, message: 'Menu item removed successfully' });
+    await menuModel.disableCategory(itemName);
+    res.status(200).json({ success: true, message: 'Menu item removed successfully' });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Internal Server Error' });
     console.error('Error:', error);
@@ -61,7 +66,7 @@ async function removeMenuItem(req, res) {
 
 module.exports = {
   addCategory,
-  removeCategory,
+  disableCategory,
   addMenuItem,
   changeItemPrice,
   removeMenuItem,

@@ -1,69 +1,58 @@
 const dbconfig = require('../../config/db');
 
-async function monthlySales() {
+async function sales(startDate, endDate) {
   const db = dbconfig.makeDb();
+  let salesResult;
   try {
-    const monthlySalesQuery = `
+    const salesQuery = `
     SELECT COUNT(id) AS 'Total number of orders', SUM(total_amount) AS 'netSales'
     FROM orders
-    WHERE created>now() - interval 1 month;
-      `;
-    const monthlySalesResult = await db.query(monthlySalesQuery);
+    WHERE 
+        CASE
+            WHEN ? IS NOT NULL AND ? IS NOT NULL THEN DATE(created) BETWEEN ? AND ?
+            ELSE created > now() - INTERVAL 1 MONTH
+        END;
+    `;
+    salesResult = await db.query(salesQuery, [startDate, endDate, startDate, endDate]);
     await db.close();
-    return monthlySalesResult;
   } catch (error) {
     console.error('Error:', error);
   }
+  return salesResult;
 }
 
-async function selectedRangeSales(startDate, endDate) {
+async function orderHistory(pageNumber, previous, next, startDate, endDate) {
   const db = dbconfig.makeDb();
+  let result;
+  let newPageNumber = pageNumber;
   try {
-    const selectedRangeSalesQuery = `
-    SELECT COUNT(id) AS 'Total number of orders', SUM(total_amount) AS 'netSales'
-    FROM orders
-    WHERE DATE(created) BETWEEN ? AND ?;
-      `;
-    const selectedRangeSalesResult = await db.query(selectedRangeSalesQuery, [startDate, endDate]);
-    await db.close();
-    return selectedRangeSalesResult;
-  } catch (error) {
-    console.error('Error:', error);
-  }
-}
-
-async function orderHistoryInitialLoad(pageNumber, previous, next) {
-  const db = dbconfig.makeDb();
-  try {
-    if (previous && pageNumber > 1) {
-      pageNumber -= 1;
+    if (previous && newPageNumber > 1) {
+      newPageNumber -= 1;
     }
     if (next) {
-      pageNumber += 1;
+      newPageNumber += 1;
     }
-    const offset = (pageNumber - 1) * 2;
-    const orderHistoryResult = await db.query('SELECT * FROM ORDERS WHERE created > now() - interval 1 month LIMIT 15 OFFSET ? ', [offset]);
-    await db.close();
-    return orderHistoryResult;
-  } catch (error) {
-    console.error('Error:', error);
-  }
-}
+    const offset = (newPageNumber - 1) * 15;
 
-async function selectedRangeOrderHistory(startDate, endDate) {
-  const db = dbconfig.makeDb();
-  try {
-    const selectedRangeOrderHistoryResult = await db.query('SELECT * FROM ORDERS WHERE DATE(created) BETWEEN ? AND ?', [startDate, endDate]);
+    const orderHistoryQuery = `
+    SELECT * 
+    FROM ORDERS 
+    WHERE
+      CASE
+        WHEN ? IS NOT NULL AND ? IS NOT NULL THEN DATE(created) BETWEEN ? AND ?
+          ELSE created > now() - interval 1 month 
+      END
+      LIMIT 15 OFFSET ?;   
+    `;
+    result = await db.query(orderHistoryQuery, [startDate, endDate, startDate, endDate, offset]);
     await db.close();
-    return selectedRangeOrderHistoryResult;
   } catch (error) {
     console.error('Error:', error);
   }
+  return result;
 }
 
 module.exports = {
-  monthlySales,
-  selectedRangeSales,
-  orderHistoryInitialLoad,
-  selectedRangeOrderHistory,
+  sales,
+  orderHistory,
 };

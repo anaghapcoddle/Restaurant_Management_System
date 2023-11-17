@@ -10,10 +10,10 @@ async function addCategory(categoryName) {
   }
 }
 
-async function removeCategory(categoryName) {
+async function disableCategory(status, categoryId) {
   const db = dbconfig.makeDb();
   try {
-    await db.query('DELETE FROM category WHERE name = ?', [categoryName]);
+    await db.query('UPDATE category SET availability = ? WHERE id = ?', [status, categoryId]);
     await db.close();
   } catch (error) {
     console.error('Error:', error);
@@ -50,10 +50,21 @@ async function removeMenuItem(itemName) {
   }
 }
 
+async function updateMenuItemsAvailability(categoryId, availability) {
+  const db = dbconfig.makeDb();
+  try {
+    await db.query('UPDATE menu SET availability = ? WHERE category_id = ?', [availability, categoryId]);
+    await db.close();
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
 module.exports = {
   addCategory,
-  removeCategory,
+  disableCategory,
   addMenuItem,
   changeItemPrice,
   removeMenuItem,
+  updateMenuItemsAvailability,
 };

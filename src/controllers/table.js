@@ -27,21 +27,22 @@ async function reserveTable(req, res) {
       return res.status(400).json({ success: false, error: 'Number must contain 10 digits' });
     }
 
-    const isTableOccupied = await tableModel.isTableOccupied(table, date, time);
+    const isTableOccupied = await tableModel.isTableOccupied(table, date);
     if (isTableOccupied) {
-      res.status(400).json({
+      return res.status(400).json({
         success: false,
         message: 'Table already booked. Please select another table, date or time',
       });
     }
+    // console.log(isTableOccupied);
     await tableModel.reserveTable(name, phone, email, date, time, table, guest);
-    res.status(201).json({
+    return res.status(201).json({
       success: true,
       message: 'Data inserted successfully',
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: 'Internal Server Error' });
     console.error('Error:', error);
+    return res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 }
 
@@ -63,10 +64,26 @@ async function cancelReservation(req, res) {
     const { name } = req.body;
     const { phone } = req.body;
     const { date } = req.body;
-    await tableModel.cancelReservation(name, phone, date);
-    res.status(204).json({
+    const { table } = req.body;
+    await tableModel.cancelReservation(name, phone, date, table);
+    res.status(200).json({ success: true, message: 'Reservation cancelled successfully' });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+}
+
+async function updateReservationStatus(req, res) {
+  try {
+    const { name } = req.body;
+    const { phone } = req.body;
+    const { date } = req.body;
+    const { table } = req.body;
+    const status = req.body.reservationStatus;
+    await tableModel.updateReservationStatus(status, name, phone, date, table);
+    res.status(500).json({
       success: true,
-      message: 'Reservation cancelled successfully.',
+      message: 'Reservation status updated successfully.',
     });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Internal Server Error' });
@@ -78,4 +95,5 @@ module.exports = {
   reserveTable,
   viewReservation,
   cancelReservation,
+  updateReservationStatus,
 };

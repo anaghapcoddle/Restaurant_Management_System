@@ -4,7 +4,7 @@ async function view() {
   const db = dbconfig.makeDb();
   let results;
   try {
-    results = await db.query('SELECT * FROM orders');
+    results = await db.query('SELECT * FROM orders WHERE created > now() - interval 1 week');
     await db.close();
   } catch (error) {
     console.error('Error:', error);

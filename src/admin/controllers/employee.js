@@ -45,7 +45,7 @@ async function removeEmployee(req, res) {
   try {
     const { employeeId } = req.body;
     await employeeModel.removeEmployee(employeeId);
-    res.status(204).json({ success: true, message: 'Employee data removed successfully' });
+    res.status(200).json({ success: true, message: 'Employee data removed successfully' });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Internal Server Error' });
     console.error('Error:', error);
