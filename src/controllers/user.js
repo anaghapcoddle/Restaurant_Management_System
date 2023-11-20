@@ -41,7 +41,7 @@ async function login(req, res) {
     }
     const resp = {
       id: result[0].id,
-      first_name: result[0].first_name,
+      firstName: result[0].first_name,
       role: result[0].role,
     };
     const token = jwt.sign(resp, 'secret', { expiresIn: 604800 });

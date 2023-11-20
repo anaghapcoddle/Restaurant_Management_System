@@ -5,7 +5,7 @@ const authorizeMiddleware = require('../middlewares/authorization');
 
 const router = express.Router();
 
-router.get('/view', authMiddleware.verifyToken, authorizeMiddleware.authorizePage(['admin', 'user']), menuController.view);
+router.get('/view', authMiddleware.verifyToken, authorizeMiddleware.authorizePage(['1', '2']), menuController.view);
 router.put('/updateAvailability', authMiddleware.verifyToken, authorizeMiddleware.authorizePage(['admin', 'user']), menuController.updateAvailability);
 
 module.exports = router;

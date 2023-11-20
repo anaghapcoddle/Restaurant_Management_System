@@ -25,7 +25,27 @@ async function findUser(username, password) {
   return findUserResult;
 }
 
+async function findPermission(userId) {
+  const db = dbconfig.makeDb();
+  let result;
+  try {
+    const findPermissionQuery = `
+    SELECT rp.permission_id
+    FROM employee e
+    JOIN user_roles ur ON e.id = ur.employee_id
+    JOIN role_permission rp ON ur.role_id = rp.role_id
+    WHERE e.id = ?;
+    `;
+    result = await db.query(findPermissionQuery, [userId]);
+    db.close();
+  } catch (error) {
+    console.error('Error:', error);
+  }
+  return result;
+}
+
 module.exports = {
   addUser,
   findUser,
+  findPermission,
 };
