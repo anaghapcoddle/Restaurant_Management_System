@@ -15,7 +15,7 @@ async function disableCategory(req, res) {
   try {
     const { categoryId } = req.body;
     const { availability } = req.body;
-    await menuModel.removeCategory(availability, categoryId);
+    await menuModel.disableCategory(availability, categoryId);
     await menuModel.updateMenuItemsAvailability(categoryId, availability);
     if (availability === '0') {
       return res.status(200).json({ success: true, message: 'Category disabled successfully. Menu items made unavailable.' });

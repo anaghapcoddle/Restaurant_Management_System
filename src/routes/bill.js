@@ -5,6 +5,6 @@ const authorizeMiddleware = require('../middlewares/authorization');
 
 const router = express.Router();
 
-router.get('/createbill', authMiddleware.verifyToken, authorizeMiddleware.authorizePage(['admin', 'user']), billController.createBill);
+router.get('/createbill', authMiddleware.verifyToken, authorizeMiddleware.authorizePage([2]), billController.createBill);
 
 module.exports = router;
