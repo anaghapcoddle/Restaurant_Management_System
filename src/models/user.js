@@ -32,8 +32,7 @@ async function findPermission(userId) {
     const rolePermissionQuery = `
     SELECT rp.permission_id
     FROM employee e
-    JOIN user_roles ur ON e.id = ur.employee_id
-    JOIN role_permission rp ON ur.role_id = rp.role_id
+    JOIN role_permission rp ON e.role_id = rp.role_id
     WHERE e.id = ?;
     `;
     const rolePermissionResult = await db.query(rolePermissionQuery, [userId]);

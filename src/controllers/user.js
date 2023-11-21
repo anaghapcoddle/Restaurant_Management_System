@@ -42,7 +42,7 @@ async function login(req, res) {
     const resp = {
       id: result[0].id,
       firstName: result[0].first_name,
-      role: result[0].role,
+      email: result[0].email,
     };
     const token = jwt.sign(resp, 'secret', { expiresIn: 604800 });
     return res.status(200).send({ auth: true, success: true, token });

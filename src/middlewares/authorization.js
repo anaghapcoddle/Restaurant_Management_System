@@ -7,6 +7,7 @@ function authorizePage(permissions) {
       const token = req.headers.authorization.split(' ')[1];
       jwt.verify(token, 'secret', async (err, decoded) => {
         const userId = decoded.id;
+        console.log(userId);
         const userPermissions = await userModel.findPermission(userId);
         const userPermissionsArray = userPermissions.map((row) => row.permission_id);
         if (permissions.every((permission) => userPermissionsArray.includes(permission))) {

@@ -21,12 +21,13 @@ async function updateEmployee(
   salary,
   email,
   employeeId,
+  roleId,
 ) {
   const db = dbconfig.makeDb();
   try {
     await db.query(
-      'UPDATE employee SET first_name = ? ,last_name = ? ,phone = ? ,address = ? ,job_id = ? ,salary = ?, email = ? WHERE id = ?',
-      [firstName, lastName, phone, address, jobId, salary, email, employeeId],
+      'UPDATE employee SET first_name = ? ,last_name = ? ,phone = ? ,address = ? ,job_id = ? ,salary = ?, email = ?, role_id = ? WHERE id = ?',
+      [firstName, lastName, phone, address, jobId, salary, email, roleId, employeeId],
     );
     await db.close();
   } catch (error) {
@@ -64,9 +65,31 @@ async function employeePerformance() {
   return ordersResult;
 }
 
+async function addPermission(employeeId, permissionId) {
+  const db = dbconfig.makeDb();
+  try {
+    await db.query('INSERT INTO user_permission (employee_id, permission_id) VALUES (?, ?)', [employeeId, permissionId]);
+    await db.close();
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
+async function removePermission(employeeId, permissionId) {
+  const db = dbconfig.makeDb();
+  try {
+    await db.query('DELETE FROM user_permission WHERE employee_id = ? AND permission_id = ?', [employeeId, permissionId]);
+    await db.close();
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
 module.exports = {
   viewEmployee,
   updateEmployee,
   removeEmployee,
   employeePerformance,
+  addPermission,
+  removePermission,
 };
