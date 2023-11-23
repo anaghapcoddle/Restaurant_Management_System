@@ -6,6 +6,6 @@ const authorizeMiddleware = require('../middlewares/authorization');
 const router = express.Router();
 
 router.get('/view', authMiddleware.verifyToken, authorizeMiddleware.authorizePage([1]), menuController.view);
-router.put('/updateAvailability', authMiddleware.verifyToken, authorizeMiddleware.authorizePage([3]), menuController.updateAvailability);
+router.patch('/updateAvailability', authMiddleware.verifyToken, authorizeMiddleware.authorizePage([3]), menuController.updateAvailability);
 
 module.exports = router;

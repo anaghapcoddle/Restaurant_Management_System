@@ -1,7 +1,7 @@
 const tableModel = require('../models/table');
 
 async function addTableType(req, res) {
-  const tableType = req.body.table_type;
+  const { tableType } = req.body;
   try {
     await tableModel.addTableType(tableType);
     res.status(201).json({ success: true, message: 'Table type added successfully' });
@@ -14,9 +14,9 @@ async function addTableType(req, res) {
 async function disableTableType(req, res) {
   try {
     const { tableType } = req.body;
-    const status = req.body.isDisabled;
-    await tableModel.disableTableType(status, tableType);
-    if (status === '0') {
+    const { isEnabled } = req.body;
+    await tableModel.disableTableType(tableType, isEnabled);
+    if (isEnabled === '1') {
       return res.status(200).json({ success: true, message: 'Table type enabled successfully' });
     }
     return res.status(200).json({ success: true, message: 'Table type disabled successfully' });
@@ -42,13 +42,13 @@ async function addTable(req, res) {
 async function disableTable(req, res) {
   try {
     const tableId = req.body.tableNumber;
-    const status = req.body.isDisabled;
-    if (status === '0') {
-      const isTableReserved = await tableModel.isTableReserved(tableId);
-      if (isTableReserved) {
-        return res.status(400).send({ success: false, message: 'Table already reservered for upcoming day. Cannot disable table now.' });
-      }
-      await tableModel.disableTable(status, tableId);
+    const { isEnabled } = req.body;
+    const isTableReserved = await tableModel.isTableReserved(tableId);
+    if (isTableReserved) {
+      return res.status(400).send({ success: false, message: 'Table already reservered for upcoming day. Cannot disable table now.' });
+    }
+    await tableModel.disableTable(isEnabled, tableId);
+    if (isEnabled === '0') {
       return res.status(200).json({ success: true, message: 'Table disabled successfully' });
     }
     return res.status(200).json({ success: true, message: 'Table enabled successfully' });

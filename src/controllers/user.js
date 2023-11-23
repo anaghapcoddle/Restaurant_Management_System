@@ -12,7 +12,6 @@ async function signup(req, res) {
         message: 'All fields are required',
       });
     }
-
     const isUserNameExisting = await userModel.findUser(signupUsername, signupPassword);
     if (isUserNameExisting.length !== 0) {
       return res.status(400).json({

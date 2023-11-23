@@ -42,10 +42,10 @@ async function addOrder(employeeId, diningTableId, totalAmount, type, status, de
   return orderId;
 }
 
-async function addOrderItems(orderID, menuId, quantity) {
+async function addOrderItems(orderId, menuId, quantity) {
   const db = dbconfig.makeDb();
   try {
-    await db.query('INSERT INTO order_items (order_id, menu_id, quantity) VALUES (?, ?, ?)', [orderID, menuId, quantity]);
+    await db.query('INSERT INTO order_items (order_id, menu_id, quantity) VALUES (?, ?, ?)', [orderId, menuId, quantity]);
     await db.close();
   } catch (error) {
     console.error('Error:', error);
@@ -96,7 +96,7 @@ async function updateOrder(orderId, menuId, quantity) {
 async function remove(orderId, menuId, quantity) {
   const db = dbconfig.makeDb();
   try {
-    const result = await db.query('SELECT quantity,amount FROM order_items WHERE order_id = ? AND menu_id = ?', [orderId, menuId]);
+    const result = await db.query('SELECT quantity FROM order_items WHERE order_id = ? AND menu_id = ?', [orderId, menuId]);
     const currentQuantity = parseInt(result[0].quantity, 10);
     const newQuantity = currentQuantity - quantity;
     if (newQuantity <= 0) {

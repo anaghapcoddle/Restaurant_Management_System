@@ -58,7 +58,6 @@ async function update(req, res) {
       const itemTotalPrice = await ordersModel.calculatePrice(obj);
       totalOrderPrice += itemTotalPrice;
     }
-    console.log(totalOrderPrice);
     await ordersModel.updateTotalPrice(totalOrderPrice, orderNumber);
     updateItems.forEach(async (obj) => {
       await ordersModel.updateOrder(orderNumber, obj.id, obj.quantity);
@@ -83,7 +82,6 @@ async function remove(req, res) {
       const itemTotalPrice = await ordersModel.calculatePrice(obj);
       totalOrderPrice -= itemTotalPrice;
     }
-    console.log(totalOrderPrice);
     await ordersModel.updateTotalPrice(totalOrderPrice, orderNumber);
     removeItems.forEach(async (obj) => {
       await ordersModel.remove(orderNumber, obj.id, obj.quantity);
