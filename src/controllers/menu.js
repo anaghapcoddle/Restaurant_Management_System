@@ -16,8 +16,8 @@ async function view(req, res) {
 async function updateAvailability(req, res) {
   try {
     const { item } = req.body;
-    const status = req.body.availabityStatus;
-    await menuModel.updateAvailability(item, status);
+    const { availability } = req.body;
+    await menuModel.updateAvailability(item, availability);
     res.status(500).json({
       success: true,
       message: 'Data changed successfully',

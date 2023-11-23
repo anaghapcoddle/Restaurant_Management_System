@@ -10,10 +10,10 @@ async function addTableType(tableType) {
   }
 }
 
-async function disableTableType(status, tableType) {
+async function disableTableType(tableType, isEnabled) {
   const db = dbconfig.makeDb();
   try {
-    await db.query('UPDATE table_type SET is_disabled = ? WHERE name = ?', [status, tableType]);
+    await db.query('UPDATE table_type SET is_enabled = ? WHERE name = ?', [isEnabled, tableType]);
     await db.close();
   } catch (error) {
     console.error('Error:', error);
@@ -42,10 +42,10 @@ async function isTableReserved(tableId) {
   return reservedTableResult.length !== 0;
 }
 
-async function disableTable(status, tableId) {
+async function disableTable(isEnabled, tableId) {
   const db = dbconfig.makeDb();
   try {
-    await db.query('UPDATE dining_table SET is_disabled = ? WHERE id = ?', [status, tableId]);
+    await db.query('UPDATE dining_table SET is_disabled = ? WHERE id = ?', [isEnabled, tableId]);
     await db.close();
   } catch (error) {
     console.error('Error:', error);

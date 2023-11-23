@@ -2,7 +2,7 @@ const employeeModel = require('../models/employee');
 
 async function viewEmployee(req, res) {
   try {
-    const employeeId = req.body.employee_id;
+    const { employeeId } = req.body;
     const viewResults = await employeeModel.viewEmployee(employeeId);
     res.status(200).json({
       success: true,
@@ -16,16 +16,8 @@ async function viewEmployee(req, res) {
 
 async function updateEmployee(req, res) {
   try {
-    const { employeeId } = req.body;
-    const { firstName } = req.body;
-    const { lastName } = req.body;
-    const { phone } = req.body;
-    const { address } = req.body;
-    const { jobId } = req.body;
-    const { salary } = req.body;
-    const { email } = req.body;
-    const { roleId } = req.body;
-    await employeeModel.updateEmployee(
+    const {
+      employeeId,
       firstName,
       lastName,
       phone,
@@ -33,9 +25,22 @@ async function updateEmployee(req, res) {
       jobId,
       salary,
       email,
-      employeeId,
       roleId,
-    );
+    } = req.body;
+
+    const employeeData = {
+      employeeId,
+      firstName,
+      lastName,
+      phone,
+      address,
+      jobId,
+      salary,
+      email,
+      roleId,
+    };
+
+    await employeeModel.updateEmployee(employeeData);
     res.status(200).json({ success: true, message: 'Employee data updated successfully' });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Internal Server Error' });

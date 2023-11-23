@@ -5,7 +5,6 @@ async function isTableOccupied(table, date) {
   let occupiedTableResult;
   try {
     occupiedTableResult = await db.query('SELECT * FROM reservation WHERE dining_table_id = ? AND date = ? AND status = "0"', [table, date]);
-    // console.log(occupiedTableResult);
     await db.close();
   } catch (error) {
     console.error('Error:', error);

@@ -2,26 +2,26 @@ const dbconfig = require('../config/db');
 
 async function view() {
   const db = dbconfig.makeDb();
-  let results;
+  let result;
   try {
-    results = await db.query('SELECT name, price, availability FROM menu');
+    result = await db.query('SELECT name, price, availability FROM menu');
     await db.close();
   } catch (error) {
     console.error('Error:', error);
   }
-  return results;
+  return result;
 }
 
 async function updateAvailability(item, status) {
   const db = dbconfig.makeDb();
-  let statusResult;
+  let result;
   try {
-    statusResult = await db.query('UPDATE menu SET availability = ? WHERE id = ?', [status, item]);
+    result = await db.query('UPDATE menu SET availability = ? WHERE id = ?', [status, item]);
     await db.close();
   } catch (error) {
     console.error('Error:', error);
   }
-  return statusResult;
+  return result;
 }
 
 module.exports = {

@@ -12,7 +12,7 @@ async function createBill(orderId) {
     WHERE id = ?;
   `;
     const billItemsResultQuery = `
-    SELECT menu.name AS itemName, order_items.quantity AS quantity, menu.price AS rate, (order_items.quantity * menu.price) AS amount 
+    SELECT menu.name AS itemName, order_items.quantity AS quantity, menu.price AS rate, (order_items.quantity * menu.price) AS amount
     FROM menu
     LEFT JOIN order_items ON menu.id = order_items.menu_id
     WHERE order_items.order_id = ?;    

@@ -12,17 +12,18 @@ async function viewEmployee(employeeId) {
   return viewResults;
 }
 
-async function updateEmployee(
-  firstName,
-  lastName,
-  phone,
-  address,
-  jobId,
-  salary,
-  email,
-  employeeId,
-  roleId,
-) {
+async function updateEmployee(employeeData) {
+  const {
+    employeeId,
+    firstName,
+    lastName,
+    phone,
+    address,
+    jobId,
+    salary,
+    email,
+    roleId,
+  } = employeeData;
   const db = dbconfig.makeDb();
   try {
     await db.query(
